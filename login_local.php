@@ -27,11 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Authenticate user
         if (empty($errors)) {
-            $stmt = $db->prepare("SELECT id, username, password_hash FROM users WHERE username = ? OR email = ?");
+            $stmt = $db->prepare("SELECT id, username, password FROM users WHERE username = ? OR email = ?");
             $stmt->execute([$username, $username]);
             $user = $stmt->fetch();
 
-            if ($user && password_verify($password, $user['password_hash'])) {
+            if ($user && password_verify($password, $user['password'])) {
                 // Login successful
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];

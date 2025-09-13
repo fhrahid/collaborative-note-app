@@ -52,14 +52,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Create user if no errors
         if (empty($errors)) {
-            $password_hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $db->prepare("INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)");
+            // Check if email already exists
+            $check_stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+            $check_stmt->execute([$email]);
             
-            if ($stmt->execute([$username, $email, $password_hash])) {
-                flash_message('Account created successfully! Please login.', 'success');
-                redirect('login_local.php');
+            if ($check_stmt->rowCount() > 0) {
+                $errors[] = 'Email address is already registered';
             } else {
-                $errors[] = 'Failed to create account';
+                $password_hash = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $db->prepare("INSERT INTO users (username, email, password, name) VALUES (?, ?, ?, ?)");
+                
+                try {
+                    if ($stmt->execute([$username, $email, $password_hash, $username])) {
+                        flash_message('Account created successfully! Please login.', 'success');
+                        redirect('login_local.php');
+                    } else {
+                        $errors[] = 'Failed to create account';
+                    }
+                } catch (PDOException $e) {
+                    if ($e->getCode() == 23000) {  // Integrity constraint violation
+                        $errors[] = 'Username or email already exists';
+                    } else {
+                        $errors[] = 'Failed to create account: ' . $e->getMessage();
+                    }
+                }
             }
         }
     }

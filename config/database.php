@@ -1,38 +1,58 @@
 <?php
+// Detect environment
+$isProduction = !in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', 'localhost:8000']);
+
 // Database configuration
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'note_app');
-define('DB_USER', 'root');  // Change this to your database username
-define('DB_PASS', '');      // Change this to your database password
-
-// Database connection class
-class Database {
-    private $host = DB_HOST;
-    private $dbname = DB_NAME;
-    private $username = DB_USER;
-    private $password = DB_PASS;
-    public $conn;
-
-    public function getConnection() {
-        $this->conn = null;
-
-        try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
-                $this->username,
-                $this->password
-            );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch(PDOException $exception) {
-            echo "Connection error: " . $exception->getMessage();
-        }
-
-        return $this->conn;
-    }
+if ($isProduction) {
+    // Production MySQL configuration
+    define('DB_HOST', 'localhost');  // Your cPanel MySQL host
+    define('DB_NAME', 'your_database_name');  // Replace with your actual database name
+    define('DB_USER', 'your_username');       // Replace with your actual username
+    define('DB_PASS', 'your_password');       // Replace with your actual password
+    define('DB_TYPE', 'mysql');
+} else {
+    // Local SQLite configuration
+    define('DB_PATH', __DIR__ . '/../database/notes.db');
+    define('DB_TYPE', 'sqlite');
 }
 
-// Create global database connection
-$database = new Database();
-$db = $database->getConnection();
+// Database connection
+try {
+    if ($isProduction) {
+        // MySQL connection for production
+        $pdo = new PDO(
+            "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+            DB_USER,
+            DB_PASS,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+            ]
+        );
+    } else {
+        // SQLite connection for local development
+        if (!file_exists(DB_PATH)) {
+            $dir = dirname(DB_PATH);
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+        }
+        
+        $pdo = new PDO(
+            "sqlite:" . DB_PATH,
+            null,
+            null,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]
+        );
+    }
+} catch(PDOException $exception) {
+    die("Database connection error: " . $exception->getMessage());
+}
+
+// Legacy variable for backward compatibility
+$db = $pdo;
 ?>

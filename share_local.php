@@ -1,5 +1,6 @@
 <?php
 require_once 'config/config_local.php';
+require_once 'includes/helpers.php';
 
 // Require login
 require_login();
@@ -253,7 +254,7 @@ if (isset($_GET['search_users'])) {
                 <?php if ($note['is_public']): ?>
                     <div class="public-link">
                         <strong>Public Link:</strong><br>
-                        <span id="publicLink">http://localhost:8000/shared_note_local.php?token=<?php echo $note['share_token']; ?></span>
+                        <span id="publicLink"><?php echo generate_share_url($note['id'], $note['share_token']); ?></span>
                         <button onclick="copyToClipboard('publicLink')" class="btn btn-small" style="margin-left: 10px;">Copy</button>
                     </div>
                     <form method="POST" style="margin-top: 1rem;">
