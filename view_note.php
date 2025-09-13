@@ -1,6 +1,5 @@
 <?php
-require_once 'config/config_local.php';
-require_once 'includes/helpers.php';
+require_once 'config/config.php';
 
 // Require login
 require_login();
@@ -10,7 +9,7 @@ $user_id = get_current_user_id();
 // Get note ID from URL
 if (!isset($_GET['id'])) {
     flash_message('Note ID is required.', 'error');
-    redirect('dashboard_local.php');
+    redirect('dashboard.php');
 }
 
 $note_id = (int)$_GET['id'];
@@ -22,7 +21,7 @@ $note = $stmt->fetch();
 
 if (!$note) {
     flash_message('Note not found.', 'error');
-    redirect('dashboard_local.php');
+    redirect('dashboard.php');
 }
 
 // Load attachments for this note
@@ -47,7 +46,7 @@ $attachments = $stmt->fetchAll();
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-primary);
             min-height: 100vh;
             line-height: 1.6;
         }
@@ -59,23 +58,23 @@ $attachments = $stmt->fetchAll();
         }
         
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
             padding: 2rem;
             border-radius: 20px;
             margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
         }
         
         .header h1 {
-            color: #2c3e50;
+            color: var(--text-primary);
             font-weight: 800;
             font-size: 1.8rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -96,7 +95,7 @@ $attachments = $stmt->fetchAll();
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--theme-transition);
             font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
@@ -123,7 +122,7 @@ $attachments = $stmt->fetchAll();
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: var(--gradient-blue);
             color: white;
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
@@ -134,7 +133,7 @@ $attachments = $stmt->fetchAll();
         }
         
         .btn-secondary {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            background: var(--gradient-gray);
             color: white;
             box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
         }
@@ -158,13 +157,13 @@ $attachments = $stmt->fetchAll();
         }
         
         .note-meta-info {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
             padding: 1.5rem;
             border-radius: 15px;
             margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
             position: relative;
             overflow: hidden;
         }
@@ -176,7 +175,7 @@ $attachments = $stmt->fetchAll();
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient-primary);
         }
         
         .meta-grid {
@@ -191,29 +190,29 @@ $attachments = $stmt->fetchAll();
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #2c3e50;
+            color: var(--text-primary);
             font-weight: 500;
         }
         
         .meta-value {
-            color: #7f8c8d;
+            color: var(--text-secondary);
             font-weight: normal;
         }
         
         .note-view-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
             padding: 2.5rem;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
             margin-bottom: 2rem;
         }
         
         .note-content-display {
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #2c3e50;
+            color: var(--text-primary);
             white-space: pre-wrap;
             word-wrap: break-word;
             margin-bottom: 2rem;
@@ -222,11 +221,11 @@ $attachments = $stmt->fetchAll();
         .note-attachments {
             margin-top: 2rem;
             padding-top: 2rem;
-            border-top: 2px solid #f1f3f4;
+            border-top: 2px solid var(--card-border);
         }
         
         .note-attachments h4 {
-            color: #2c3e50;
+            color: var(--text-primary);
             font-size: 1.3rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
@@ -242,11 +241,11 @@ $attachments = $stmt->fetchAll();
         }
         
         .attachment-card {
-            background: #f8f9fa;
+            background: var(--attachment-bg);
             padding: 1.5rem;
             border-radius: 15px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
+            border: 2px solid var(--attachment-border);
+            transition: var(--theme-transition);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -259,13 +258,13 @@ $attachments = $stmt->fetchAll();
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--gradient-primary);
         }
         
         .attachment-card:hover {
             transform: translateY(-5px);
-            border-color: #667eea;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            border-color: var(--border-focus);
+            box-shadow: var(--shadow-medium);
         }
         
         .attachment-icon {
@@ -275,20 +274,20 @@ $attachments = $stmt->fetchAll();
         
         .attachment-filename {
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
             word-break: break-word;
         }
         
         .attachment-meta {
-            color: #7f8c8d;
+            color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 1rem;
         }
         
         .reading-time {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
+            background: var(--attachment-bg);
+            color: var(--border-focus);
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -296,6 +295,7 @@ $attachments = $stmt->fetchAll();
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
+            border: 1px solid var(--attachment-border);
         }
         
         @media (max-width: 768px) {
@@ -361,14 +361,14 @@ $attachments = $stmt->fetchAll();
         <header class="header">
             <h1>📖 <?php echo htmlspecialchars($note['title']); ?></h1>
             <nav class="nav">
-                <a href="dashboard_local.php" class="btn btn-secondary">🏠 Dashboard</a>
-                <a href="logout_local.php" class="btn btn-secondary">👋 Logout</a>
+                <a href="dashboard.php" class="btn btn-secondary">🏠 Dashboard</a>
+                <a href="logout.php" class="btn btn-secondary">👋 Logout</a>
             </nav>
         </header>
 
         <div class="action-buttons">
-            <a href="note_local.php?id=<?php echo $note['id']; ?>" class="btn btn-primary">✏️ Edit Note</a>
-            <a href="share_local.php?id=<?php echo $note['id']; ?>" class="btn btn-secondary">🔗 Share Note</a>
+            <a href="note.php?id=<?php echo $note['id']; ?>" class="btn btn-primary">✏️ Edit Note</a>
+            <a href="share.php?id=<?php echo $note['id']; ?>" class="btn btn-secondary">🔗 Share Note</a>
         </div>
 
         <div class="note-meta-info">
@@ -420,7 +420,7 @@ $attachments = $stmt->fetchAll();
                                         <?php echo format_file_size($attachment['file_size']); ?> • 
                                         <?php echo date('M j, Y', strtotime($attachment['uploaded_at'])); ?>
                                     </div>
-                                    <a href="download_local.php?id=<?php echo $attachment['id']; ?>" 
+                                    <a href="download.php?id=<?php echo $attachment['id']; ?>" 
                                        class="btn btn-small btn-primary">⬇️ Download</a>
                                 </div>
                             <?php endforeach; ?>
@@ -431,8 +431,12 @@ $attachments = $stmt->fetchAll();
         </main>
     </div>
 
+    <!-- Theme System -->
     <script src="assets/js/theme-manager.js"></script>
     <script>
+        // Initialize theme manager
+        const themeManager = new ThemeManager();
+        
         // Add copy to clipboard functionality
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(function() {
@@ -447,13 +451,13 @@ $attachments = $stmt->fetchAll();
             // Ctrl+E or Cmd+E to edit
             if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
                 e.preventDefault();
-                window.location.href = 'note_local.php?id=<?php echo $note['id']; ?>';
+                window.location.href = 'note.php?id=<?php echo $note['id']; ?>';
             }
             
             // Ctrl+S or Cmd+S to share
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
-                window.location.href = 'share_local.php?id=<?php echo $note['id']; ?>';
+                window.location.href = 'share.php?id=<?php echo $note['id']; ?>';
             }
         });
 

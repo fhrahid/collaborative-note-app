@@ -88,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Note App</title>
+    <link rel="stylesheet" href="assets/css/themes.css">
     <style>
         * {
             margin: 0;
@@ -216,17 +217,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             width: 100%;
             padding: 1rem 1.5rem;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             font-family: inherit;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border: 2px solid transparent;
         }
         
         .btn::before {
@@ -236,42 +236,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.8s ease;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
         }
         
         .btn:hover::before {
             left: 100%;
         }
         
-        .btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-        }
-        
         .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
             margin-bottom: 1.5rem;
         }
         
         .btn-primary:hover {
-            transform: translateY(-4px);
-            background: linear-gradient(135deg, #5b21b6 0%, #4338ca 100%);
-            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
         
         .btn-primary:active {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35);
-        }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
+            transform: translateY(-1px);
         }
         
         .auth-link {
@@ -446,6 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 
+    <script src="assets/js/theme-manager.js"></script>
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             const btn = document.getElementById('registerBtn');

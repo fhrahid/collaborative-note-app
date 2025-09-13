@@ -59,6 +59,7 @@ $flash = get_flash_message();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Note App</title>
+    <link rel="stylesheet" href="assets/css/themes.css">
     <style>
         * {
             margin: 0;
@@ -118,11 +119,11 @@ $flash = get_flash_message();
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
@@ -130,9 +131,6 @@ $flash = get_flash_message();
             text-align: center;
             position: relative;
             overflow: hidden;
-            font-family: inherit;
-            letter-spacing: 0.02em;
-            border: 2px solid transparent;
         }
         
         .btn::before {
@@ -142,119 +140,51 @@ $flash = get_flash_message();
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.8s ease;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
         }
         
         .btn:hover::before {
             left: 100%;
         }
         
-        .btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-        }
-        
         .btn-primary {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
         
         .btn-primary:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg, #5b21b6 0%, #4338ca 100%);
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
         }
         
         .btn-secondary {
-            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
             color: white;
-            box-shadow: 0 4px 20px rgba(100, 116, 139, 0.25);
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
         }
         
         .btn-secondary:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg, #475569 0%, #334155 100%);
-            box-shadow: 0 8px 30px rgba(100, 116, 139, 0.35);
-        }
-        
-        .btn-secondary:active {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(100, 116, 139, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
         }
         
         .btn-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             color: white;
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
         }
         
         .btn-danger:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.35);
-        }
-        
-        .btn-danger:active {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
-        }
-        
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.1);
-            color: #374151;
-            border: 2px solid #e5e7eb;
-            backdrop-filter: blur(10px);
-        }
-        
-        .btn-outline:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: #6366f1;
-            color: #6366f1;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
         }
         
         .btn-small {
             padding: 0.5rem 1rem;
             font-size: 0.8rem;
-            border-radius: 10px;
-        }
-        
-        .btn-large {
-            padding: 1rem 2rem;
-            font-size: 1rem;
-            border-radius: 16px;
-        }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-        
-        .btn:disabled:hover {
-            transform: none;
-            box-shadow: none;
+            border-radius: 8px;
         }
         
         .alert {
@@ -599,5 +529,7 @@ $flash = get_flash_message();
             <?php endif; ?>
         </main>
     </div>
+
+    <script src="assets/js/theme-manager.js"></script>
 </body>
 </html>

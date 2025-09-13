@@ -10,8 +10,21 @@ $page_title = 'About the Developers';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $page_title; ?> - Collaborative Note App</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/css/themes.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
         .developers-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -19,45 +32,78 @@ $page_title = 'About the Developers';
         }
         
         .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 20px;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
+            color: var(--text-primary);
+            padding: 60px 40px;
             text-align: center;
-            border-radius: 10px;
+            border-radius: 20px;
             margin-bottom: 40px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient-primary);
         }
         
         .hero-section h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .hero-section p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
         
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin: 40px 0;
         }
         
         .developer-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
+            border-radius: 20px;
             padding: 30px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 2px solid transparent;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
+            transition: var(--theme-transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .developer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
         }
         
         .developer-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            border-color: #667eea;
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
         }
         
         .developer-photo {
@@ -65,111 +111,203 @@ $page_title = 'About the Developers';
             height: 120px;
             border-radius: 50%;
             margin: 0 auto 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 4px solid var(--border-focus);
+            object-fit: cover;
+            transition: var(--theme-transition);
+        }
+        
+        .developer-card:hover .developer-photo {
+            transform: scale(1.05);
+            border-color: var(--gradient-primary);
+        }
+        
+        .developer-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        
+        .developer-card p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .skills {
             display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .skill-tag {
+            background: var(--attachment-bg);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid var(--attachment-border);
+            transition: var(--theme-transition);
+        }
+        
+        .skill-tag:hover {
+            background: var(--border-focus);
+            color: white;
+        }
+        
+        .developer-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-link {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 3em;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .developer-photo img {
-            width: 100%;
-            height: 100%;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            object-fit: cover;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: var(--theme-transition);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
-        .developer-name {
-            font-size: 1.4em;
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient-gray);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
+            box-shadow: var(--shadow-light);
+            transition: var(--theme-transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
-        .student-id {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 15px;
-            padding: 5px 10px;
-            background: #f8f9fa;
-            border-radius: 20px;
-            display: inline-block;
-        }
-        
-        .contribution {
-            color: #555;
-            font-style: italic;
-            line-height: 1.5;
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
         }
         
         .project-info {
-            background: #f8f9fa;
-            padding: 40px;
-            border-radius: 10px;
-            margin: 40px 0;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
         }
         
-        .project-info h3 {
-            color: #333;
-            margin-bottom: 20px;
+        .project-info h2 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .project-info p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
         
         .tech-stack {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
         }
         
-        .tech-tag {
-            background: #667eea;
+        .tech-item {
+            background: var(--gradient-blue);
             color: white;
-            padding: 8px 15px;
+            padding: 0.6rem 1.2rem;
             border-radius: 20px;
-            font-size: 0.9em;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: var(--theme-transition);
         }
         
-        .back-link {
-            display: inline-block;
-            margin: 20px 0;
-            padding: 12px 25px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        
-        .back-link:hover {
-            background: #5a6fd8;
+        .tech-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
         }
         
         @media (max-width: 768px) {
+            .developers-container {
+                padding: 10px;
+            }
+            
+            .hero-section {
+                padding: 40px 20px;
+            }
+            
             .hero-section h1 {
-                font-size: 2em;
+                font-size: 2.2rem;
+            }
+            
+            .hero-section p {
+                font-size: 1.1rem;
             }
             
             .team-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
             
             .developer-card {
                 padding: 20px;
             }
+            
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+            
+            .developer-links {
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
+
+    </style>
+</head>
+<body>
+    <a href="dashboard.php" class="back-button">
+        ← Back to Dashboard
+    </a>
+
     <div class="developers-container">
-        <div class="hero-section">
-            <h1>🚀 Development Team</h1>
-            <p>Meet the talented developers behind the Collaborative Note App</p>
-        </div>
-        
-        <a href="index.php" class="back-link">← Back to App</a>
-        
+        <section class="hero-section">
+            <h1>Meet Our Team</h1>
+            <p>The passionate developers behind this collaborative note-taking experience</p>
+        </section>
+
         <div class="team-grid">
             <div class="developer-card">
                 <div class="developer-photo">
@@ -178,19 +316,33 @@ $page_title = 'About the Developers';
                     $photo_extensions = ['jpg', 'jpeg', 'png'];
                     foreach($photo_extensions as $ext) {
                         if (file_exists("team/jubair_moaj.$ext")) {
-                            echo "<img src='team/jubair_moaj.$ext' alt='Jubair Moaj'>";
+                            echo "<img src='team/jubair_moaj.$ext' alt='Jubair Moaj' class='developer-photo'>";
                             $photo_found = true;
                             break;
                         }
                     }
-                    if (!$photo_found) echo "JM";
+                    if (!$photo_found) echo "<div style='width:120px;height:120px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;'>JM</div>";
                     ?>
                 </div>
-                <div class="developer-name">Jubair Moaj</div>
+                <h3>Jubair Moaj</h3>
                 <div class="student-id">ID: 2022100000010</div>
-                <div class="contribution">Computer Science Student passionate about database systems and web development.</div>
+                <p>Computer Science Student passionate about database systems and web development.</p>
+                <div class="skills">
+                    <span class="skill-tag">PHP</span>
+                    <span class="skill-tag">MySQL</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">Database Design</span>
+                </div>
+                <div class="developer-links">
+                    <a href="#" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
             </div>
-            
+
             <div class="developer-card">
                 <div class="developer-photo">
                     <?php 
@@ -198,19 +350,33 @@ $page_title = 'About the Developers';
                     $photo_extensions = ['jpg', 'jpeg', 'png'];
                     foreach($photo_extensions as $ext) {
                         if (file_exists("team/sayeed_joy.$ext")) {
-                            echo "<img src='team/sayeed_joy.$ext' alt='Md. Sayeed Al Mahmud Joy'>";
+                            echo "<img src='team/sayeed_joy.$ext' alt='Md. Sayeed Al Mahmud Joy' class='developer-photo'>";
                             $photo_found = true;
                             break;
                         }
                     }
-                    if (!$photo_found) echo "SJ";
+                    if (!$photo_found) echo "<div style='width:120px;height:120px;border-radius:50%;background:var(--gradient-blue);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;'>SJ</div>";
                     ?>
                 </div>
-                <div class="developer-name">Md. Sayeed Al Mahmud Joy</div>
+                <h3>Md. Sayeed Al Mahmud Joy</h3>
                 <div class="student-id">ID: 2022100000088</div>
-                <div class="contribution">Focused on backend development and creating secure, scalable applications.</div>
+                <p>Computer Science Student focused on backend development and creating secure, scalable applications.</p>
+                <div class="skills">
+                    <span class="skill-tag">Backend</span>
+                    <span class="skill-tag">Security</span>
+                    <span class="skill-tag">API Design</span>
+                    <span class="skill-tag">Performance</span>
+                </div>
+                <div class="developer-links">
+                    <a href="#" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
             </div>
-            
+
             <div class="developer-card">
                 <div class="developer-photo">
                     <?php 
@@ -218,19 +384,33 @@ $page_title = 'About the Developers';
                     $photo_extensions = ['jpg', 'jpeg', 'png'];
                     foreach($photo_extensions as $ext) {
                         if (file_exists("team/ferdous_rahid.$ext")) {
-                            echo "<img src='team/ferdous_rahid.$ext' alt='MD. Ferdous Hasan Rahid'>";
+                            echo "<img src='team/ferdous_rahid.$ext' alt='MD. Ferdous Hasan Rahid' class='developer-photo'>";
                             $photo_found = true;
                             break;
                         }
                     }
-                    if (!$photo_found) echo "FR";
+                    if (!$photo_found) echo "<div style='width:120px;height:120px;border-radius:50%;background:var(--gradient-purple);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;'>FR</div>";
                     ?>
                 </div>
-                <div class="developer-name">MD. Ferdous Hasan Rahid</div>
+                <h3>MD. Ferdous Hasan Rahid</h3>
                 <div class="student-id">ID: 2023100000546</div>
-                <div class="contribution">rahid</div>
+                <p>Computer Science Student focused on creating intuitive user interfaces and responsive designs.</p>
+                <div class="skills">
+                    <span class="skill-tag">Frontend</span>
+                    <span class="skill-tag">CSS3</span>
+                    <span class="skill-tag">UI Design</span>
+                    <span class="skill-tag">Responsive</span>
+                </div>
+                <div class="developer-links">
+                    <a href="#" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link" title="Portfolio">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                </div>
             </div>
-            
+
             <div class="developer-card">
                 <div class="developer-photo">
                     <?php 
@@ -238,19 +418,33 @@ $page_title = 'About the Developers';
                     $photo_extensions = ['jpg', 'jpeg', 'png'];
                     foreach($photo_extensions as $ext) {
                         if (file_exists("team/abed_hossain.$ext")) {
-                            echo "<img src='team/abed_hossain.$ext' alt='Abed Hossain'>";
+                            echo "<img src='team/abed_hossain.$ext' alt='Abed Hossain' class='developer-photo'>";
                             $photo_found = true;
                             break;
                         }
                     }
-                    if (!$photo_found) echo "AH";
+                    if (!$photo_found) echo "<div style='width:120px;height:120px;border-radius:50%;background:var(--gradient-green);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;'>AH</div>";
                     ?>
                 </div>
-                <div class="developer-name">Abed Hossain</div>
+                <h3>Abed Hossain</h3>
                 <div class="student-id">ID: 2023100000180</div>
-                <div class="contribution">Creative flutter developer specializing in mobile app development.</div>
+                <p>Computer Science Student with interest in mobile app development and cross-platform solutions.</p>
+                <div class="skills">
+                    <span class="skill-tag">Flutter</span>
+                    <span class="skill-tag">Mobile Dev</span>
+                    <span class="skill-tag">Dart</span>
+                    <span class="skill-tag">UI/UX</span>
+                </div>
+                <div class="developer-links">
+                    <a href="#" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
             </div>
-            
+
             <div class="developer-card">
                 <div class="developer-photo">
                     <?php 
@@ -258,56 +452,74 @@ $page_title = 'About the Developers';
                     $photo_extensions = ['jpg', 'jpeg', 'png'];
                     foreach($photo_extensions as $ext) {
                         if (file_exists("team/suchana_esha.$ext")) {
-                            echo "<img src='team/suchana_esha.$ext' alt='Suchana Jaman Esha'>";
+                            echo "<img src='team/suchana_esha.$ext' alt='Suchana Jaman Esha' class='developer-photo'>";
                             $photo_found = true;
                             break;
                         }
                     }
-                    if (!$photo_found) echo "SE";
+                    if (!$photo_found) echo "<div style='width:120px;height:120px;border-radius:50%;background:var(--gradient-pink);display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;'>SE</div>";
                     ?>
                 </div>
-                <div class="developer-name">Suchana Jaman Esha</div>
+                <h3>Suchana Jaman Esha</h3>
                 <div class="student-id">ID: 2023100000146</div>
-                <div class="contribution">Detail-oriented developer ensuring code quality and comprehensive application testing.</div>
+                <p>Computer Science Student ensuring code quality and comprehensive application testing.</p>
+                <div class="skills">
+                    <span class="skill-tag">Testing</span>
+                    <span class="skill-tag">QA</span>
+                    <span class="skill-tag">Debugging</span>
+                    <span class="skill-tag">Quality</span>
+                </div>
+                <div class="developer-links">
+                    <a href="#" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
             </div>
         </div>
-        
-        <div class="project-info">
-            <h3>📚 About This Project</h3>
-            <p>The Collaborative Note App is an advanced database management project that demonstrates:</p>
-            <ul>
-                <li><strong>Complex Database Design</strong> - Multi-table relationships with proper normalization</li>
-                <li><strong>Advanced MySQL Features</strong> - Foreign keys, indexes, transactions, and joins</li>
-                <li><strong>Security Implementation</strong> - CSRF protection, SQL injection prevention, secure authentication</li>
-                <li><strong>Real-world Application</strong> - Full-featured note sharing and collaboration system</li>
-                <li><strong>Production Deployment</strong> - Ready for cPanel hosting with custom domain support</li>
-            </ul>
-            
-            <h3>🛠️ Technology Stack</h3>
+
+        <section class="project-info">
+            <h2>About This Project</h2>
+            <p>
+                The Collaborative Note App is an advanced database management project that demonstrates 
+                complex database design, real-time collaboration features, and modern web development practices. 
+                Built as part of our database course, it showcases our skills in full-stack development and 
+                database optimization.
+            </p>
             <div class="tech-stack">
-                <span class="tech-tag">PHP 8.2+</span>
-                <span class="tech-tag">MySQL 8.0+</span>
-                <span class="tech-tag">HTML5</span>
-                <span class="tech-tag">CSS3</span>
-                <span class="tech-tag">JavaScript</span>
-                <span class="tech-tag">PDO</span>
-                <span class="tech-tag">Security Best Practices</span>
+                <span class="tech-item">PHP 8.2+</span>
+                <span class="tech-item">MySQL 8.0+</span>
+                <span class="tech-item">JavaScript ES6+</span>
+                <span class="tech-item">CSS3</span>
+                <span class="tech-item">HTML5</span>
+                <span class="tech-item">PDO</span>
+                <span class="tech-item">Security Best Practices</span>
+                <span class="tech-item">Responsive Design</span>
             </div>
-            
-            <h3>🎯 Academic Achievement</h3>
-            <p>This project showcases advanced database concepts including:</p>
-            <ul>
-                <li>Entity-Relationship modeling and normalization</li>
-                <li>Complex JOIN operations across multiple tables</li>
-                <li>Transaction management and data integrity</li>
-                <li>Performance optimization with proper indexing</li>
-                <li>Real-world application development</li>
-            </ul>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-            <a href="index.php" class="back-link">🏠 Return to Collaborative Note App</a>
-        </div>
+        </section>
     </div>
+
+    <style>
+        .student-id {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            padding: 0.4rem 0.8rem;
+            background: var(--attachment-bg);
+            border-radius: 15px;
+            display: inline-block;
+            border: 1px solid var(--attachment-border);
+            font-weight: 600;
+        }
+    </style>
+
+    <!-- Theme System -->
+    <script src="assets/js/theme-manager.js"></script>
+    <script>
+        // Initialize theme manager
+        const themeManager = new ThemeManager();
+    </script>
 </body>
 </html>

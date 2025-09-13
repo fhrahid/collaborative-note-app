@@ -1,5 +1,5 @@
 <?php
-require_once 'config/config_local.php';
+require_once 'config/config.php';
 
 // Require login
 require_login();
@@ -11,7 +11,7 @@ $success_messages = [];
 // Get note ID from URL
 if (!isset($_GET['id'])) {
     flash_message('Note ID is required.', 'error');
-    redirect('dashboard_local.php');
+    redirect('dashboard.php');
 }
 
 $note_id = (int)$_GET['id'];
@@ -23,7 +23,7 @@ $note = $stmt->fetch();
 
 if (!$note) {
     flash_message('Note not found or you do not have permission to share it.', 'error');
-    redirect('dashboard_local.php');
+    redirect('dashboard.php');
 }
 
 // Handle form submissions
@@ -195,7 +195,7 @@ if (isset($_GET['search_users'])) {
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-primary);
             min-height: 100vh;
             line-height: 1.6;
         }
@@ -207,19 +207,26 @@ if (isset($_GET['search_users'])) {
         }
         
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
             padding: 1.5rem 2rem;
             border-radius: 15px;
             margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
+        }
+        
+        /* Enhanced dark mode header */
+        [data-theme="dark"] .header {
+            background: rgba(45, 45, 45, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
         
         .header h1 {
-            color: #2c3e50;
+            color: var(--text-primary);
             font-weight: 700;
             font-size: 1.8rem;
         }
@@ -236,43 +243,40 @@ if (isset($_GET['search_users'])) {
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--theme-transition);
             font-size: 0.9rem;
             display: inline-block;
             text-align: center;
         }
         
         .btn-primary {
-            background: #3498db;
+            background: var(--gradient-blue);
             color: white;
         }
         
         .btn-primary:hover {
-            background: #2980b9;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            box-shadow: var(--shadow-medium);
         }
         
         .btn-secondary {
-            background: #95a5a6;
+            background: var(--gradient-gray);
             color: white;
         }
         
         .btn-secondary:hover {
-            background: #7f8c8d;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+            box-shadow: var(--shadow-medium);
         }
         
         .btn-danger {
-            background: #e74c3c;
+            background: var(--gradient-red);
             color: white;
         }
         
         .btn-danger:hover {
-            background: #c0392b;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            box-shadow: var(--shadow-medium);
         }
         
         .btn-small {
@@ -281,18 +285,50 @@ if (isset($_GET['search_users'])) {
         }
         
         .share-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-light);
             margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--card-border);
+        }
+        
+        /* Enhanced dark mode support */
+        [data-theme="dark"] .share-section {
+            background: rgba(45, 45, 45, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        [data-theme="dark"] .public-link {
+            background: rgba(54, 54, 54, 0.98);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            color: #e8e8e8;
+        }
+        
+        [data-theme="dark"] .form-group input,
+        [data-theme="dark"] .form-group select {
+            background: rgba(58, 58, 58, 0.98);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            color: #e8e8e8;
+        }
+        
+        [data-theme="dark"] .search-results {
+            background: rgba(45, 45, 45, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        [data-theme="dark"] .search-result {
+            color: #e8e8e8;
+        }
+        
+        [data-theme="dark"] .search-result:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
         
         .share-section h3 {
             margin-bottom: 1.5rem;
-            color: #2c3e50;
+            color: var(--text-primary);
             font-size: 1.4rem;
             font-weight: 700;
             display: flex;
@@ -301,15 +337,16 @@ if (isset($_GET['search_users'])) {
         }
         
         .public-link {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: var(--attachment-bg);
             padding: 1.5rem;
             border-radius: 10px;
-            border: 2px solid #dee2e6;
+            border: 2px solid var(--attachment-border);
             word-break: break-all;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-size: 0.9rem;
             margin-bottom: 1rem;
             position: relative;
+            color: var(--text-primary);
         }
         
         .form-group {
@@ -320,24 +357,25 @@ if (isset($_GET['search_users'])) {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-primary);
         }
         
         .form-group input,
         .form-group select {
             width: 100%;
             padding: 0.75rem;
-            border: 2px solid #e1e8ed;
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
+            transition: var(--theme-transition);
+            background: var(--input-bg);
+            color: var(--text-primary);
         }
         
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: var(--border-focus);
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
         
@@ -350,25 +388,33 @@ if (isset($_GET['search_users'])) {
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 2px solid #3498db;
+            background: var(--card-bg);
+            border: 2px solid var(--border-focus);
             border-top: none;
             border-radius: 0 0 8px 8px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        /* Enhanced dark mode for search results */
+        [data-theme="dark"] .search-results {
+            background: rgba(45, 45, 45, 0.98);
+            border: 2px solid rgba(102, 126, 234, 0.6);
+            backdrop-filter: blur(10px);
         }
         
         .search-result {
             padding: 1rem;
             cursor: pointer;
-            border-bottom: 1px solid #f1f3f4;
+            border-bottom: 1px solid var(--card-border);
             transition: background 0.2s ease;
+            color: var(--text-primary);
         }
         
         .search-result:hover {
-            background: #f8f9fa;
+            background: var(--attachment-bg);
         }
         
         .search-result:last-child {
@@ -380,17 +426,28 @@ if (isset($_GET['search_users'])) {
             justify-content: space-between;
             align-items: center;
             padding: 1.5rem;
-            border: 2px solid #e1e8ed;
+            border: 2px solid var(--card-border);
             border-radius: 10px;
             margin-bottom: 1rem;
-            background: white;
-            transition: all 0.3s ease;
+            background: var(--card-bg);
+            transition: var(--theme-transition);
+        }
+        
+        /* Enhanced dark mode for shared user cards */
+        [data-theme="dark"] .shared-user {
+            background: rgba(45, 45, 45, 0.98);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        [data-theme="dark"] .shared-user:hover {
+            border-color: rgba(102, 126, 234, 0.6);
+            background: rgba(54, 54, 54, 0.98);
         }
         
         .shared-user:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #3498db;
+            box-shadow: var(--shadow-medium);
+            border-color: var(--border-focus);
         }
         
         .shared-user-info {
@@ -398,12 +455,12 @@ if (isset($_GET['search_users'])) {
         }
         
         .shared-user-info strong {
-            color: #2c3e50;
+            color: var(--text-primary);
             font-size: 1.1rem;
         }
         
         .shared-user-info small {
-            color: #7f8c8d;
+            color: var(--text-secondary);
             display: block;
             margin-top: 0.25rem;
         }
@@ -419,12 +476,12 @@ if (isset($_GET['search_users'])) {
         }
         
         .permission-read {
-            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            background: var(--gradient-blue);
             color: white;
         }
         
         .permission-edit {
-            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            background: var(--gradient-green);
             color: white;
         }
         
@@ -436,15 +493,15 @@ if (isset($_GET['search_users'])) {
         }
         
         .alert-error {
-            background: linear-gradient(135deg, #ff7675 0%, #e17055 100%);
+            background: var(--gradient-red);
             color: white;
-            border: 2px solid #d63031;
+            border: 2px solid rgba(231, 76, 60, 0.3);
         }
         
         .alert-success {
-            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            background: var(--gradient-green);
             color: white;
-            border: 2px solid #00b894;
+            border: 2px solid rgba(0, 184, 148, 0.3);
         }
         
         .note-info {
@@ -453,24 +510,27 @@ if (isset($_GET['search_users'])) {
         }
         
         .note-info h2 {
-            color: white;
+            color: var(--text-primary);
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .note-info p {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-secondary);
             font-size: 1.1rem;
         }
         
         /* Custom URL styling */
         .custom-url-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: var(--attachment-bg);
             padding: 1.5rem;
             border-radius: 10px;
-            border: 2px solid #dee2e6;
+            border: 2px solid var(--attachment-border);
             margin-top: 1rem;
         }
         
@@ -482,7 +542,7 @@ if (isset($_GET['search_users'])) {
         }
         
         .url-preview span {
-            color: #6c757d;
+            color: var(--text-secondary);
             font-weight: 600;
         }
         
@@ -515,9 +575,9 @@ if (isset($_GET['search_users'])) {
         <header class="header">
             <h1>Share Note</h1>
             <nav class="nav">
-                <a href="note_local.php?id=<?php echo $note_id; ?>" class="btn btn-secondary">Edit Note</a>
-                <a href="dashboard_local.php" class="btn btn-secondary">Back to Dashboard</a>
-                <a href="logout_local.php" class="btn btn-secondary">Logout</a>
+                <a href="note.php?id=<?php echo $note_id; ?>" class="btn btn-secondary">Edit Note</a>
+                <a href="dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+                <a href="logout.php" class="btn btn-secondary">Logout</a>
             </nav>
         </header>
 
@@ -540,7 +600,7 @@ if (isset($_GET['search_users'])) {
         <main class="main">
             <div class="note-info">
                 <h2><?php echo htmlspecialchars($note['title']); ?></h2>
-                <p style="color: #666;">Manage sharing settings for this note</p>
+                <p>Manage sharing settings for this note</p>
             </div>
 
             <!-- Public Link Sharing -->
@@ -550,14 +610,14 @@ if (isset($_GET['search_users'])) {
                 
                 <?php if ($note['is_public']): ?>
                     <div class="public-link">
-                        <strong style="color: #2c3e50;">🔗 Your Public Link:</strong><br>
-                        <span id="publicLink" style="color: #3498db; font-weight: 600;"><?php echo generate_share_url($note['id'], $note['share_token']); ?></span>
+                        <strong style="color: var(--text-primary);">🔗 Your Public Link:</strong><br>
+                        <span id="publicLink" style="color: var(--border-focus); font-weight: 600;"><?php echo generate_share_url($note['id'], $note['share_token']); ?></span>
                         <button onclick="copyToClipboard('publicLink')" class="btn btn-small btn-secondary" style="margin-left: 15px;">📋 Copy Link</button>
                     </div>
                     
                     <!-- Custom URL Update Form -->
                     <div class="custom-url-section">
-                        <strong style="color: #2c3e50; font-size: 1.1rem;">🎨 Customize Your URL</strong>
+                        <strong style="color: var(--text-primary); font-size: 1.1rem;">🎨 Customize Your URL</strong>
                         <form method="POST" style="margin-top: 15px;">
                             <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                             <input type="hidden" name="action" value="update_custom_url">
@@ -568,10 +628,10 @@ if (isset($_GET['search_users'])) {
                                        placeholder="your-custom-url" 
                                        pattern="[a-zA-Z0-9_-]{3,20}"
                                        title="3-20 characters: letters, numbers, hyphens, underscores only"
-                                       style="flex: 1; padding: 0.75rem; border: 2px solid #e1e8ed; border-radius: 8px; font-family: monospace;" required>
+                                       style="flex: 1; padding: 0.75rem; border: 2px solid var(--input-border); border-radius: 8px; font-family: monospace; background: var(--input-bg); color: var(--text-primary);" required>
                                 <button type="submit" class="btn btn-small btn-primary">✨ Update</button>
                             </div>
-                            <small style="color: #7f8c8d; margin-top: 8px; display: block; font-style: italic;">
+                            <small style="color: var(--text-secondary); margin-top: 8px; display: block; font-style: italic;">
                                 💡 Create a memorable URL with 3-20 characters (letters, numbers, hyphens, underscores)
                             </small>
                         </form>
@@ -596,9 +656,9 @@ if (isset($_GET['search_users'])) {
                                            placeholder="your-custom-url" 
                                            pattern="[a-zA-Z0-9_-]{3,20}"
                                            title="3-20 characters: letters, numbers, hyphens, underscores only"
-                                           style="flex: 1; padding: 0.75rem; border: 2px solid #e1e8ed; border-radius: 8px; font-family: monospace;">
+                                           style="flex: 1; padding: 0.75rem; border: 2px solid var(--input-border); border-radius: 8px; font-family: monospace; background: var(--input-bg); color: var(--text-primary);">
                                 </div>
-                                <small style="color: #7f8c8d; margin-top: 8px; display: block; font-style: italic;">
+                                <small style="color: var(--text-secondary); margin-top: 8px; display: block; font-style: italic;">
                                     💡 Leave empty for a random URL or create your own memorable link
                                 </small>
                             </div>
@@ -647,8 +707,8 @@ if (isset($_GET['search_users'])) {
                     <div class="shared-user">
                         <div class="shared-user-info">
                             <strong><?php echo htmlspecialchars($share['username']); ?></strong>
-                            <small style="color: #666; display: block;"><?php echo htmlspecialchars($share['email']); ?></small>
-                            <small style="color: #999;">Shared on <?php echo date('M j, Y', strtotime($share['shared_at'])); ?></small>
+                            <small style="color: var(--text-secondary); display: block;"><?php echo htmlspecialchars($share['email']); ?></small>
+                            <small style="color: var(--text-secondary);">Shared on <?php echo date('M j, Y', strtotime($share['shared_at'])); ?></small>
                         </div>
                         <div>
                             <span class="permission-badge permission-<?php echo $share['permission']; ?>">
@@ -668,7 +728,12 @@ if (isset($_GET['search_users'])) {
         </main>
     </div>
 
+    <!-- Theme System -->
+    <script src="assets/js/theme-manager.js"></script>
     <script>
+        // Initialize theme manager
+        const themeManager = new ThemeManager();
+        
         function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
             const text = element.textContent;
@@ -677,7 +742,7 @@ if (isset($_GET['search_users'])) {
                 const button = event.target;
                 const originalText = button.textContent;
                 button.textContent = '✅ Copied!';
-                button.style.background = '#00b894';
+                button.style.background = 'var(--gradient-green)';
                 
                 setTimeout(() => {
                     button.textContent = originalText;
@@ -705,7 +770,7 @@ if (isset($_GET['search_users'])) {
             }
 
             searchTimeout = setTimeout(() => {
-                fetch(`share_local.php?id=<?php echo $note_id; ?>&search_users=1&q=${encodeURIComponent(query)}`)
+                fetch(`share.php?id=<?php echo $note_id; ?>&search_users=1&q=${encodeURIComponent(query)}`)
                     .then(response => response.json())
                     .then(users => {
                         searchResults.innerHTML = '';
@@ -738,6 +803,12 @@ if (isset($_GET['search_users'])) {
             }
         });
     </script>
+    
+    <!-- Theme System -->
     <script src="assets/js/theme-manager.js"></script>
+    <script>
+        // Initialize theme manager
+        const themeManager = new ThemeManager();
+    </script>
 </body>
 </html>
