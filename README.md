@@ -81,6 +81,322 @@ A full-featured multi-user collaborative note-taking application built with PHP 
    - The app automatically detects the production environment
    - URLs are dynamically generated based on your domain
 
+## 🌐 Complete cPanel Deployment Tutorial
+
+### Prerequisites
+- cPanel hosting account with PHP 8.2+ and MySQL support
+- Custom domain name (e.g., yourdomain.com)
+- FTP client or cPanel File Manager access
+
+### Step 1: Domain Setup
+
+#### Option A: Main Domain Deployment
+1. **Point Domain to Hosting**
+   - Update your domain's nameservers to your hosting provider
+   - Wait 24-48 hours for DNS propagation
+
+2. **Verify Domain in cPanel**
+   - Login to cPanel
+   - Go to "Subdomains" or "Addon Domains" 
+   - Ensure your domain points to `public_html/`
+
+#### Option B: Subdomain Deployment
+1. **Create Subdomain in cPanel**
+   ```
+   Subdomain: notes
+   Domain: yourdomain.com
+   Document Root: public_html/notes
+   ```
+
+2. **Result**: App will be accessible at `https://notes.yourdomain.com`
+
+### Step 2: File Upload
+
+#### Method A: cPanel File Manager (Recommended)
+1. **Access File Manager**
+   - Login to cPanel
+   - Open "File Manager"
+   - Navigate to `public_html/` (or `public_html/notes/` for subdomain)
+
+2. **Upload Project Files**
+   ```
+   1. Download project as ZIP from GitHub
+   2. Upload ZIP file to cPanel File Manager
+   3. Extract in the correct directory
+   4. Delete the ZIP file after extraction
+   ```
+
+#### Method B: FTP Upload
+1. **FTP Connection Details**
+   ```
+   Host: ftp.yourdomain.com (or your hosting FTP server)
+   Username: your_cpanel_username
+   Password: your_cpanel_password
+   Port: 21 (or 22 for SFTP)
+   ```
+
+2. **Upload Structure**
+   ```
+   public_html/
+   ├── config/
+   ├── database/
+   ├── includes/
+   ├── uploads/          ← Create this directory
+   ├── index.php
+   ├── login.php
+   └── ... (all other files)
+   ```
+
+### Step 3: Database Configuration
+
+#### Create MySQL Database
+1. **Access MySQL Databases in cPanel**
+   - Find "MySQL Databases" in cPanel
+   - Create a new database: `youruser_noteapp`
+
+2. **Create Database User**
+   ```
+   Username: youruser_noteapp
+   Password: (generate strong password)
+   ```
+
+3. **Assign User to Database**
+   - Select the user and database
+   - Grant "ALL PRIVILEGES"
+
+#### Import Database Schema
+1. **Access phpMyAdmin**
+   - Find "phpMyAdmin" in cPanel
+   - Select your database (`youruser_noteapp`)
+
+2. **Import Schema**
+   ```
+   1. Click "Import" tab
+   2. Choose file: database/mysql_schema.sql
+   3. Click "Go" to import
+   4. Verify all tables are created
+   ```
+
+### Step 4: Configure Database Connection
+
+#### Update config/database.php
+```php
+<?php
+// Production Database Configuration
+$host = 'localhost';  // Usually localhost for cPanel
+$dbname = 'youruser_noteapp';  // Your actual database name
+$username = 'youruser_noteapp';  // Your database username
+$password = 'your_secure_password';  // Your database password
+
+try {
+    $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ]);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+?>
+```
+
+### Step 5: Set Directory Permissions
+
+#### Required Permissions
+```bash
+# Via cPanel File Manager or FTP client
+uploads/           755 (rwxr-xr-x)
+config/            755 (rwxr-xr-x)
+database/          755 (rwxr-xr-x)
+All PHP files      644 (rw-r--r--)
+```
+
+#### Setting Permissions in cPanel
+1. **File Manager Method**
+   - Right-click on `uploads/` directory
+   - Select "Change Permissions"
+   - Set to 755 (or check: Owner read/write/execute, Group read/execute, World read/execute)
+
+### Step 6: SSL Certificate Setup
+
+#### Enable HTTPS (Recommended)
+1. **Free SSL via cPanel**
+   - Go to "SSL/TLS" in cPanel
+   - Select "Let's Encrypt SSL"
+   - Install certificate for your domain
+
+2. **Force HTTPS Redirect**
+   - Create/edit `.htaccess` in public_html:
+   ```apache
+   RewriteEngine On
+   RewriteCond %{HTTPS} off
+   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+   ```
+
+### Step 7: Testing Your Deployment
+
+#### Verification Checklist
+1. **Basic Access Test**
+   ```
+   ✅ Visit: https://yourdomain.com (or subdomain)
+   ✅ Should see login/register page
+   ✅ No PHP errors displayed
+   ```
+
+2. **Database Connection Test**
+   ```
+   ✅ Try to register a new account
+   ✅ Login with the account
+   ✅ Create a test note
+   ```
+
+3. **File Upload Test**
+   ```
+   ✅ Create a note with file attachment
+   ✅ Verify file uploads to uploads/ directory
+   ✅ Download the attachment
+   ```
+
+4. **Sharing Features Test**
+   ```
+   ✅ Share a note with another user
+   ✅ Generate a public link
+   ✅ Test collaborative editing
+   ```
+
+### Step 8: Production Optimization
+
+#### Performance Settings
+1. **PHP Configuration** (if accessible)
+   ```php
+   ; php.ini or .htaccess
+   upload_max_filesize = 10M
+   post_max_size = 10M
+   max_execution_time = 300
+   memory_limit = 128M
+   ```
+
+2. **MySQL Optimization**
+   ```sql
+   -- Run these in phpMyAdmin for better performance
+   OPTIMIZE TABLE notes;
+   OPTIMIZE TABLE shared_notes;
+   OPTIMIZE TABLE attachments;
+   ```
+
+#### Security Hardening
+1. **Hide Sensitive Files**
+   ```apache
+   # Add to .htaccess
+   <Files "config/database.php">
+       Order Allow,Deny
+       Deny from all
+   </Files>
+   
+   <Files "*.sql">
+       Order Allow,Deny
+       Deny from all
+   </Files>
+   ```
+
+2. **Regular Backups**
+   - Use cPanel backup tools
+   - Schedule automatic database backups
+   - Keep backups of uploads/ directory
+
+### Step 9: Domain-Specific Configuration
+
+#### Custom Domain Features
+1. **Automatic URL Generation**
+   - The app automatically detects your domain
+   - Sharing links use your custom domain
+   - Email notifications (if implemented) use your domain
+
+2. **Branding Opportunities**
+   - Update app title in templates
+   - Add your logo/favicon
+   - Customize CSS for your brand
+
+### Troubleshooting Common Issues
+
+#### Database Connection Errors
+```
+Error: "Database connection failed"
+Solution: 
+1. Verify database credentials in config/database.php
+2. Check if database user has correct privileges
+3. Confirm database name format (usually: username_dbname)
+```
+
+#### File Upload Issues
+```
+Error: "Failed to upload file"
+Solution:
+1. Check uploads/ directory permissions (755)
+2. Verify PHP upload limits in hosting settings
+3. Ensure uploads/ directory exists and is writable
+```
+
+#### SSL/HTTPS Issues
+```
+Error: "Mixed content warnings"
+Solution:
+1. Ensure all internal links use relative paths
+2. Force HTTPS with .htaccess redirect
+3. Update any hardcoded HTTP links
+```
+
+#### Permission Denied Errors
+```
+Error: Various permission errors
+Solution:
+1. Set correct file permissions (644 for files, 755 for directories)
+2. Check if your hosting account has necessary privileges
+3. Contact hosting support if issues persist
+```
+
+### Step 10: Going Live Checklist
+
+#### Pre-Launch Verification
+- [ ] Database connection working
+- [ ] User registration/login functional
+- [ ] Note creation and editing works
+- [ ] File upload/download working
+- [ ] Sharing features operational
+- [ ] SSL certificate installed
+- [ ] Custom domain pointing correctly
+- [ ] All sensitive files protected
+- [ ] Backup system in place
+
+#### Post-Launch Monitoring
+- [ ] Check error logs regularly
+- [ ] Monitor database performance
+- [ ] Track user registrations
+- [ ] Verify sharing links work externally
+- [ ] Test from different devices/browsers
+
+### Example: Complete Deployment for "mynotes.example.com"
+
+```bash
+# Final deployment structure
+https://mynotes.example.com/
+├── index.php                 (Main app entry)
+├── login.php                 (User authentication)
+├── register.php              (User registration)
+├── dashboard_local.php       (User dashboard)
+├── config/
+│   └── database.php          (Database credentials)
+├── uploads/                  (File storage - 755 permissions)
+└── database/
+    └── mysql_schema.sql      (Database structure)
+
+# Database: example_mynotes
+# User: example_noteuser
+# Tables: users, notes, attachments, shared_notes, collaborators
+```
+
+Your collaborative note app is now live at your custom domain with full functionality! 🚀
+
 ## 📊 Database Schema
 
 ### Core Tables
