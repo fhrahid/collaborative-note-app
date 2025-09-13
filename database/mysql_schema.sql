@@ -19,7 +19,7 @@ CREATE TABLE notes (
     title VARCHAR(255) NOT NULL,
     content TEXT,
     is_public TINYINT(1) DEFAULT 0,
-    share_token VARCHAR(32) NULL,
+    share_token VARCHAR(20) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -66,6 +66,7 @@ CREATE TABLE collaborators (
 -- Create indexes for better performance
 CREATE INDEX idx_notes_user_id ON notes(user_id);
 CREATE INDEX idx_notes_created_at ON notes(created_at);
+CREATE UNIQUE INDEX idx_notes_share_token ON notes(share_token);
 CREATE INDEX idx_attachments_note_id ON attachments(note_id);
 CREATE INDEX idx_shared_notes_note_id ON shared_notes(note_id);
 CREATE INDEX idx_shared_notes_shared_by ON shared_notes(shared_by_user_id);

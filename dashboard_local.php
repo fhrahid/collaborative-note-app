@@ -58,44 +58,520 @@ $flash = get_flash_message();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Note App (Local)</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Dashboard - Note App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-weight: 800;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .user-welcome {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+            letter-spacing: 0.02em;
+            border: 2px solid transparent;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.8s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #5b21b6 0%, #4338ca 100%);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(100, 116, 139, 0.25);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            box-shadow: 0 8px 30px rgba(100, 116, 139, 0.35);
+        }
+        
+        .btn-secondary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(100, 116, 139, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.35);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.35);
+        }
+        
+        .btn-danger:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 10px;
+        }
+        
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 16px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            border: 2px solid rgba(0, 184, 148, 0.3);
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #ff7675 0%, #e17055 100%);
+            color: white;
+            border: 2px solid rgba(255, 118, 117, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .empty-state h3 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .empty-state p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .note-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .note-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .note-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+        }
+        
+        .note-title {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+        
+        .note-title a {
+            color: #2c3e50;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .note-title a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .note-content {
+            color: #5a6c7d;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .note-attachments-info {
+            margin-bottom: 1rem;
+        }
+        
+        .attachment-badge {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f1f3f4;
+        }
+        
+        .note-date {
+            color: #95a5a6;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .note-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav {
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .notes-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .note-card {
+                padding: 1.5rem;
+            }
+            
+            .note-actions {
+                gap: 0.3rem;
+            }
+            
+            .note-meta {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-small {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>My Notes <span style="font-size: 0.6em; color: #666;">(Local Dev)</span></h1>
+            <div>
+                <h1>📝 My Notes</h1>
+                <div class="user-welcome">Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?>! ✨</div>
+            </div>
             <nav class="nav">
-                <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</span>
-                <a href="note_local.php" class="btn btn-primary">New Note</a>
-                <a href="shared_with_me_local.php" class="btn btn-secondary">Shared With Me</a>
-                <a href="logout_local.php" class="btn btn-secondary">Logout</a>
+                <a href="note_local.php" class="btn btn-primary">✍️ New Note</a>
+                <a href="shared_with_me_local.php" class="btn btn-secondary">🤝 Shared With Me</a>
+                <a href="developers.php" class="btn btn-secondary">👨‍💻 Team</a>
+                <a href="logout_local.php" class="btn btn-secondary">👋 Logout</a>
             </nav>
         </header>
 
         <?php if ($flash): ?>
             <div class="alert alert-<?php echo $flash['type']; ?>">
-                <p><?php echo htmlspecialchars($flash['message']); ?></p>
+                <?php if ($flash['type'] === 'success'): ?>
+                    ✅ <?php echo htmlspecialchars($flash['message']); ?>
+                <?php else: ?>
+                    ⚠️ <?php echo htmlspecialchars($flash['message']); ?>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($notes)): ?>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number"><?php echo count($notes); ?></div>
+                    <div class="stat-label">Total Notes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><?php echo array_sum(array_column($notes, 'attachment_count')); ?></div>
+                    <div class="stat-label">Attachments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number"><?php echo count(array_filter($notes, function($note) { return !empty($note['is_public']); })); ?></div>
+                    <div class="stat-label">Public Notes</div>
+                </div>
             </div>
         <?php endif; ?>
 
         <main class="main">
             <?php if (empty($notes)): ?>
                 <div class="empty-state">
-                    <h3>No notes yet</h3>
-                    <p>Create your first note to get started!</p>
-                    <a href="note_local.php" class="btn btn-primary">Create Note</a>
+                    <div class="empty-state-icon">🌟</div>
+                    <h3>Start Your Journey</h3>
+                    <p>Create your first note and begin organizing your thoughts, ideas, and important information!</p>
+                    <a href="note_local.php" class="btn btn-primary">🚀 Create Your First Note</a>
                 </div>
             <?php else: ?>
                 <div class="notes-grid">
                     <?php foreach ($notes as $note): ?>
                         <div class="note-card">
                             <h3 class="note-title">
-                                <a href="view_note_local.php?id=<?php echo $note['id']; ?>" style="color: inherit; text-decoration: none;">
+                                <a href="view_note_local.php?id=<?php echo $note['id']; ?>">
                                     <?php echo htmlspecialchars($note['title']); ?>
                                 </a>
                             </h3>
                             <p class="note-content"><?php echo nl2br(htmlspecialchars(substr($note['content'], 0, 150))); ?><?php echo strlen($note['content']) > 150 ? '...' : ''; ?></p>
+                            
                             <?php if ($note['attachment_count'] > 0): ?>
                                 <div class="note-attachments-info">
                                     <span class="attachment-badge">
@@ -103,15 +579,18 @@ $flash = get_flash_message();
                                     </span>
                                 </div>
                             <?php endif; ?>
+                            
                             <div class="note-meta">
-                                <span class="note-date"><?php echo date('M j, Y g:i A', strtotime($note['updated_at'])); ?></span>
+                                <span class="note-date">
+                                    🕒 <?php echo date('M j, Y g:i A', strtotime($note['updated_at'])); ?>
+                                </span>
                                 <div class="note-actions">
-                                    <a href="view_note_local.php?id=<?php echo $note['id']; ?>" class="btn btn-small btn-primary">View</a>
-                                    <a href="note_local.php?id=<?php echo $note['id']; ?>" class="btn btn-small">Edit</a>
-                                    <a href="share_local.php?id=<?php echo $note['id']; ?>" class="btn btn-small">Share</a>
+                                    <a href="view_note_local.php?id=<?php echo $note['id']; ?>" class="btn btn-small btn-primary">👀 View</a>
+                                    <a href="note_local.php?id=<?php echo $note['id']; ?>" class="btn btn-small btn-secondary">✏️ Edit</a>
+                                    <a href="share_local.php?id=<?php echo $note['id']; ?>" class="btn btn-small btn-secondary">🔗 Share</a>
                                     <a href="dashboard_local.php?delete=<?php echo $note['id']; ?>&token=<?php echo generate_csrf_token(); ?>" 
                                        class="btn btn-small btn-danger" 
-                                       onclick="return confirm('Are you sure you want to delete this note?')">Delete</a>
+                                       onclick="return confirm('Are you sure you want to delete this note? This action cannot be undone.')">🗑️ Delete</a>
                                 </div>
                             </div>
                         </div>

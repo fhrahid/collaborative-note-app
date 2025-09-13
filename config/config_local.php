@@ -63,17 +63,27 @@ function get_flash_message() {
 }
 
 function generate_share_token() {
-    return bin2hex(random_bytes(16));
+    // Generate a shorter 6-character alphanumeric token
+    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    $token = '';
+    for ($i = 0; $i < 6; $i++) {
+        $token .= $characters[random_int(0, strlen($characters) - 1)];
+    }
+    return $token;
 }
 
-function generate_share_url($note_id, $share_token = null) {
+function get_base_url() {
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'];
     $path = dirname($_SERVER['SCRIPT_NAME']);
     
     // Remove trailing slash if not root
     $path = $path === '/' ? '' : rtrim($path, '/');
-    $base_url = $protocol . '://' . $host . $path;
+    return $protocol . '://' . $host . $path;
+}
+
+function generate_share_url($note_id, $share_token = null) {
+    $base_url = get_base_url();
     
     if ($share_token) {
         return $base_url . '/shared_note_local.php?token=' . $share_token;

@@ -14,6 +14,7 @@ A full-featured multi-user collaborative note-taking application built with PHP 
 - **User-to-User Sharing** - Share notes with specific users with read/write permissions
 - **Collaborator System** - Add team members as collaborators with different access levels
 - **Public Link Sharing** - Generate public links for notes with token-based security
+- **Custom URLs** - Create memorable custom URLs like `yourdomain.com/my-note`
 - **Permission Management** - Fine-grained control over who can view and edit notes
 
 ### Database Features
@@ -262,9 +263,50 @@ All PHP files      644 (rw-r--r--)
    ✅ Share a note with another user
    ✅ Generate a public link
    ✅ Test collaborative editing
+   ✅ Create custom URL
    ```
 
-### Step 8: Production Optimization
+### Step 8: Custom URL Feature
+
+The application now supports custom URLs for public sharing, allowing you to create memorable links like `yourdomain.com/my-note` instead of random tokens.
+
+#### How to Use Custom URLs:
+
+1. **Creating a New Public Link with Custom URL**
+   - Go to Share settings for any note
+   - Under "Public Link Sharing", enter your desired custom URL
+   - URL must be 3-20 characters: letters, numbers, hyphens, underscores only
+   - Click "Generate Public Link"
+
+2. **Updating Existing Public Links**
+   - For notes that already have public links
+   - Use the "Customize Your URL" section
+   - Enter new custom URL and click "Update"
+
+3. **URL Requirements**
+   ```
+   ✅ Length: 3-20 characters
+   ✅ Allowed: letters (a-z, A-Z)
+   ✅ Allowed: numbers (0-9)  
+   ✅ Allowed: hyphens (-) and underscores (_)
+   ❌ Spaces, special characters, or symbols
+   ```
+
+4. **Examples of Good Custom URLs**
+   ```
+   ✅ meeting-notes
+   ✅ project_2024
+   ✅ team-guidelines
+   ✅ MyReport
+   ```
+
+#### Technical Implementation:
+- Custom URLs are validated for uniqueness
+- Short links work via `s.php` handler
+- Seamless fallback to public view for valid tokens
+- Database enforced unique constraints
+
+### Step 9: Production Optimization
 
 #### Performance Settings
 1. **PHP Configuration** (if accessible)
@@ -516,9 +558,78 @@ php database/final_verification.php
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 👨‍💻 Author
+## 👨‍💻 Development Team
 
-**fhrahid** - [GitHub Profile](https://github.com/fhrahid)
+This collaborative note app was developed by a talented team of computer science students as part of their database course project.
+
+### Core Development Team
+
+<table>
+<tr>
+<td align="center">
+<img src="team/jubair_moaj.jpg" width="150" height="150" style="border-radius: 50%;" alt="Jubair Moaj"/><br>
+<b>Jubair Moaj</b><br>
+<sub>Student ID: 2022100000010</sub><br>
+<sub>Lead Developer & Database Architecture</sub>
+</td>
+<td align="center">
+<img src="team/sayeed_joy.jpg" width="150" height="150" style="border-radius: 50%;" alt="Md. Sayeed Al Mahmud Joy"/><br>
+<b>Md. Sayeed Al Mahmud Joy</b><br>
+<sub>Student ID: 2022100000088</sub><br>
+<sub>Backend Development & Security</sub>
+</td>
+<td align="center">
+<img src="team/ferdous_rahid.jpg" width="150" height="150" style="border-radius: 50%;" alt="MD. Ferdous Hasan Rahid"/><br>
+<b>MD. Ferdous Hasan Rahid</b><br>
+<sub>Student ID: 2023100000546</sub><br>
+<sub>Full-Stack Development & Project Lead</sub>
+</td>
+</tr>
+<tr>
+<td align="center">
+<img src="team/abed_hossain.jpg" width="150" height="150" style="border-radius: 50%;" alt="Abed Hossain"/><br>
+<b>Abed Hossain</b><br>
+<sub>Student ID: 2023100000180</sub><br>
+<sub>Frontend Development & UI/UX</sub>
+</td>
+<td align="center">
+<img src="team/suchana_esha.jpg" width="150" height="150" style="border-radius: 50%;" alt="Suchana Jaman Esha"/><br>
+<b>Suchana Jaman Esha</b><br>
+<sub>Student ID: 2023100000146</sub><br>
+<sub>Testing & Quality Assurance</sub>
+</td>
+<td align="center">
+<br><br>
+<i>Collaborative<br>Team Effort</i><br>
+<sub>🤝 Working together to create<br>an innovative note-sharing platform</sub>
+</td>
+</tr>
+</table>
+
+### Team Contributions
+
+- **Database Design**: Complex relational schema with proper normalization and foreign key relationships
+- **Security Implementation**: CSRF protection, SQL injection prevention, secure file uploads
+- **Sharing System**: Advanced multi-user collaboration with permission management
+- **User Experience**: Intuitive interface design and responsive layout
+- **Testing & QA**: Comprehensive testing across different scenarios and edge cases
+- **Documentation**: Detailed documentation and deployment guides
+
+### Academic Project Details
+
+- **Course**: Database Management Systems
+- **Institution**: [Your University Name]
+- **Semester**: Fall 2025
+- **Project Type**: Advanced Database Application Development
+- **Technologies**: PHP 8.2+, MySQL 8.0+, HTML5, CSS3, JavaScript
+
+---
+
+## 👨‍💻 Author & Contact
+
+**Primary Contact**: MD. Ferdous Hasan Rahid  
+**GitHub**: [fhrahid](https://github.com/fhrahid)  
+**Project Repository**: https://github.com/fhrahid/collaborative-note-app
 
 ---
 

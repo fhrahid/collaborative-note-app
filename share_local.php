@@ -35,14 +35,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($action === 'generate_public_link') {
             // Generate or update public share link
-            $share_token = generate_share_token();
-            $stmt = $db->prepare("UPDATE notes SET is_public = 1, share_token = ? WHERE id = ?");
-            if ($stmt->execute([$share_token, $note_id])) {
-                $success_messages[] = 'Public share link generated successfully!';
-                $note['is_public'] = 1;
-                $note['share_token'] = $share_token;
+            $custom_slug = trim($_POST['custom_slug'] ?? '');
+            
+            if (!empty($custom_slug)) {
+                // Validate custom slug
+                if (!preg_match('/^[a-zA-Z0-9_-]{3,20}$/', $custom_slug)) {
+                    $errors[] = 'Custom URL must be 3-20 characters long and contain only letters, numbers, hyphens, and underscores.';
+                } else {
+                    // Check if slug is already taken
+                    $stmt = $db->prepare("SELECT id FROM notes WHERE share_token = ? AND id != ?");
+                    $stmt->execute([$custom_slug, $note_id]);
+                    if ($stmt->rowCount() > 0) {
+                        $errors[] = 'This custom URL is already taken. Please choose another.';
+                    } else {
+                        $share_token = $custom_slug;
+                    }
+                }
             } else {
-                $errors[] = 'Failed to generate public link';
+                // Generate random token if no custom slug provided
+                $share_token = generate_share_token();
+            }
+            
+            if (empty($errors)) {
+                $stmt = $db->prepare("UPDATE notes SET is_public = 1, share_token = ? WHERE id = ?");
+                if ($stmt->execute([$share_token, $note_id])) {
+                    $success_messages[] = 'Public share link generated successfully!';
+                    $note['is_public'] = 1;
+                    $note['share_token'] = $share_token;
+                } else {
+                    $errors[] = 'Failed to generate public link';
+                }
             }
         } elseif ($action === 'disable_public_link') {
             // Disable public sharing
@@ -53,6 +75,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $note['share_token'] = null;
             } else {
                 $errors[] = 'Failed to disable public sharing';
+            }
+        } elseif ($action === 'update_custom_url') {
+            // Update existing public link with custom URL
+            $custom_slug = trim($_POST['custom_slug'] ?? '');
+            
+            if (empty($custom_slug)) {
+                $errors[] = 'Please enter a custom URL.';
+            } elseif (!preg_match('/^[a-zA-Z0-9_-]{3,20}$/', $custom_slug)) {
+                $errors[] = 'Custom URL must be 3-20 characters long and contain only letters, numbers, hyphens, and underscores.';
+            } else {
+                // Check if slug is already taken
+                $stmt = $db->prepare("SELECT id FROM notes WHERE share_token = ? AND id != ?");
+                $stmt->execute([$custom_slug, $note_id]);
+                if ($stmt->rowCount() > 0) {
+                    $errors[] = 'This custom URL is already taken. Please choose another.';
+                } else {
+                    $stmt = $db->prepare("UPDATE notes SET share_token = ? WHERE id = ?");
+                    if ($stmt->execute([$custom_slug, $note_id])) {
+                        $success_messages[] = 'Custom URL updated successfully!';
+                        $note['share_token'] = $custom_slug;
+                    } else {
+                        $errors[] = 'Failed to update custom URL';
+                    }
+                }
             }
         } elseif ($action === 'share_with_user') {
             // Share with specific user
@@ -141,74 +187,418 @@ if (isset($_GET['search_users'])) {
     <title>Share Note - <?php echo htmlspecialchars($note['title']); ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+            letter-spacing: 0.02em;
+            border: 2px solid transparent;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.8s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #5b21b6 0%, #4338ca 100%);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.35);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(100, 116, 139, 0.25);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            box-shadow: 0 8px 30px rgba(100, 116, 139, 0.35);
+        }
+        
+        .btn-secondary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(100, 116, 139, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.35);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: 0 8px 30px rgba(239, 68, 68, 0.35);
+        }
+        
+        .btn-danger:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: #6366f1;
+            color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 10px;
+        }
+        
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 16px;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        }
+        
         .share-section {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .share-section h3 {
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .public-link {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             padding: 1.5rem;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-        .share-section h3 {
+            border: 2px solid #dee2e6;
+            word-break: break-all;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
             margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
             color: #2c3e50;
         }
-        .public-link {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 5px;
-            border: 1px solid #dee2e6;
-            word-break: break-all;
-            font-family: monospace;
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
         }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
         .user-search {
             position: relative;
         }
+        
         .search-results {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
             background: white;
-            border: 1px solid #ddd;
+            border: 2px solid #3498db;
             border-top: none;
-            border-radius: 0 0 5px 5px;
+            border-radius: 0 0 8px 8px;
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+        
         .search-result {
-            padding: 0.75rem;
+            padding: 1rem;
             cursor: pointer;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background 0.2s ease;
         }
+        
         .search-result:hover {
             background: #f8f9fa;
         }
+        
+        .search-result:last-child {
+            border-bottom: none;
+        }
+        
         .shared-user {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            margin-bottom: 0.5rem;
+            padding: 1.5rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            background: white;
+            transition: all 0.3s ease;
         }
+        
+        .shared-user:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3498db;
+        }
+        
         .shared-user-info {
             flex: 1;
         }
+        
+        .shared-user-info strong {
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .shared-user-info small {
+            color: #7f8c8d;
+            display: block;
+            margin-top: 0.25rem;
+        }
+        
         .permission-badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 3px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
             font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .permission-read {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+        }
+        
+        .permission-edit {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
             font-weight: 500;
         }
-        .permission-read {
-            background: #d1ecf1;
-            color: #0c5460;
+        
+        .alert-error {
+            background: linear-gradient(135deg, #ff7675 0%, #e17055 100%);
+            color: white;
+            border: 2px solid #d63031;
         }
-        .permission-edit {
-            background: #d4edda;
-            color: #155724;
+        
+        .alert-success {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            border: 2px solid #00b894;
+        }
+        
+        .note-info {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .note-info h2 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .note-info p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+        
+        /* Custom URL styling */
+        .custom-url-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+            margin-top: 1rem;
+        }
+        
+        .url-preview {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .url-preview span {
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .nav {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .shared-user {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -252,21 +642,62 @@ if (isset($_GET['search_users'])) {
                 
                 <?php if ($note['is_public']): ?>
                     <div class="public-link">
-                        <strong>Public Link:</strong><br>
-                        <span id="publicLink"><?php echo generate_share_url($note['id'], $note['share_token']); ?></span>
-                        <button onclick="copyToClipboard('publicLink')" class="btn btn-small" style="margin-left: 10px;">Copy</button>
+                        <strong style="color: #2c3e50;">🔗 Your Public Link:</strong><br>
+                        <span id="publicLink" style="color: #3498db; font-weight: 600;"><?php echo generate_share_url($note['id'], $note['share_token']); ?></span>
+                        <button onclick="copyToClipboard('publicLink')" class="btn btn-small btn-secondary" style="margin-left: 15px;">📋 Copy Link</button>
                     </div>
-                    <form method="POST" style="margin-top: 1rem;">
+                    
+                    <!-- Custom URL Update Form -->
+                    <div class="custom-url-section">
+                        <strong style="color: #2c3e50; font-size: 1.1rem;">🎨 Customize Your URL</strong>
+                        <form method="POST" style="margin-top: 15px;">
+                            <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                            <input type="hidden" name="action" value="update_custom_url">
+                            <div class="url-preview">
+                                <span><?php echo rtrim(get_base_url(), '/'); ?>/</span>
+                                <input type="text" name="custom_slug" 
+                                       value="<?php echo htmlspecialchars($note['share_token']); ?>" 
+                                       placeholder="your-custom-url" 
+                                       pattern="[a-zA-Z0-9_-]{3,20}"
+                                       title="3-20 characters: letters, numbers, hyphens, underscores only"
+                                       style="flex: 1; padding: 0.75rem; border: 2px solid #e1e8ed; border-radius: 8px; font-family: monospace;" required>
+                                <button type="submit" class="btn btn-small btn-primary">✨ Update</button>
+                            </div>
+                            <small style="color: #7f8c8d; margin-top: 8px; display: block; font-style: italic;">
+                                💡 Create a memorable URL with 3-20 characters (letters, numbers, hyphens, underscores)
+                            </small>
+                        </form>
+                    </div>
+                    
+                    <form method="POST" style="margin-top: 1.5rem;">
                         <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                         <input type="hidden" name="action" value="disable_public_link">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to disable public sharing?')">Disable Public Sharing</button>
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to disable public sharing?')">🚫 Disable Public Sharing</button>
                     </form>
                 <?php else: ?>
-                    <form method="POST">
-                        <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
-                        <input type="hidden" name="action" value="generate_public_link">
-                        <button type="submit" class="btn btn-primary">Generate Public Link</button>
-                    </form>
+                    <div class="custom-url-section">
+                        <form method="POST">
+                            <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                            <input type="hidden" name="action" value="generate_public_link">
+                            
+                            <div class="form-group">
+                                <label for="custom_slug">🎯 Custom URL (optional)</label>
+                                <div class="url-preview">
+                                    <span><?php echo rtrim(get_base_url(), '/'); ?>/</span>
+                                    <input type="text" name="custom_slug" id="custom_slug"
+                                           placeholder="your-custom-url" 
+                                           pattern="[a-zA-Z0-9_-]{3,20}"
+                                           title="3-20 characters: letters, numbers, hyphens, underscores only"
+                                           style="flex: 1; padding: 0.75rem; border: 2px solid #e1e8ed; border-radius: 8px; font-family: monospace;">
+                                </div>
+                                <small style="color: #7f8c8d; margin-top: 8px; display: block; font-style: italic;">
+                                    💡 Leave empty for a random URL or create your own memorable link
+                                </small>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">🚀 Generate Public Link</button>
+                        </form>
+                    </div>
                 <?php endif; ?>
             </div>
 
@@ -296,7 +727,7 @@ if (isset($_GET['search_users'])) {
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" id="shareButton" disabled>Share Note</button>
+                    <button type="submit" class="btn btn-primary" id="shareButton" disabled>🤝 Share Note</button>
                 </form>
             </div>
 
@@ -319,7 +750,7 @@ if (isset($_GET['search_users'])) {
                                 <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                                 <input type="hidden" name="action" value="remove_share">
                                 <input type="hidden" name="shared_id" value="<?php echo $share['id']; ?>">
-                                <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Remove sharing with this user?')">Remove</button>
+                                <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Remove sharing with this user?')">❌ Remove</button>
                             </form>
                         </div>
                     </div>
@@ -334,7 +765,18 @@ if (isset($_GET['search_users'])) {
             const element = document.getElementById(elementId);
             const text = element.textContent;
             navigator.clipboard.writeText(text).then(function() {
-                alert('Link copied to clipboard!');
+                // Create a better notification
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.style.background = '#00b894';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            }).catch(function() {
+                alert('Failed to copy. Please copy manually.');
             });
         }
 

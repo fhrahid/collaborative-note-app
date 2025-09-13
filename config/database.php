@@ -2,8 +2,11 @@
 // MySQL Database Configuration
 // Works with both XAMPP (local) and cPanel (production)
 
+// Force local development for now (you can change this later)
+$forceLocal = true;
+
 // Detect environment
-$isProduction = isset($_SERVER['HTTP_HOST']) && !in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', 'localhost:8000']);
+$isProduction = !$forceLocal && isset($_SERVER['HTTP_HOST']) && !in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', 'localhost:8000']);
 
 if ($isProduction) {
     // Production MySQL configuration (cPanel)

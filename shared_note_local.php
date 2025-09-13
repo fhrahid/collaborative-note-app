@@ -1,5 +1,6 @@
 <?php
 require_once 'config/config_local.php';
+require_once 'includes/helpers.php';
 
 // Get share token from URL
 $share_token = $_GET['token'] ?? '';
