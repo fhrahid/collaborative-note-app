@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include local database connection (using SQLite for development)
-require_once __DIR__ . '/database_local.php';
+// Include MySQL database connection
+require_once __DIR__ . '/database.php';
 
 // Helper functions
 function sanitize_input($data) {
@@ -23,6 +23,7 @@ function redirect($url) {
 function is_logged_in() {
     return isset($_SESSION['user_id']);
 }
+
 
 function require_login() {
     if (!is_logged_in()) {
@@ -65,6 +66,22 @@ function generate_share_token() {
     return bin2hex(random_bytes(16));
 }
 
+function generate_share_url($note_id, $share_token = null) {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $path = dirname($_SERVER['SCRIPT_NAME']);
+    
+    // Remove trailing slash if not root
+    $path = $path === '/' ? '' : rtrim($path, '/');
+    $base_url = $protocol . '://' . $host . $path;
+    
+    if ($share_token) {
+        return $base_url . '/shared_note_local.php?token=' . $share_token;
+    } else {
+        return $base_url . '/view_note_local.php?id=' . $note_id;
+    }
+}
+
 function can_user_access_note($note_id, $user_id, $db) {
     // Check if user owns the note
     $stmt = $db->prepare("SELECT id FROM notes WHERE id = ? AND user_id = ?");
@@ -79,6 +96,19 @@ function can_user_access_note($note_id, $user_id, $db) {
     $shared = $stmt->fetch();
     if ($shared) {
         return $shared['permission'];
+    }
+    
+    // Check if user is a collaborator
+    $stmt = $db->prepare("SELECT permission FROM collaborators WHERE note_id = ? AND user_id = ?");
+    $stmt->execute([$note_id, $user_id]);
+    $collaborator = $stmt->fetch();
+    if ($collaborator) {
+        // Map collaborator permissions to shared permissions
+        if ($collaborator['permission'] === 'admin' || $collaborator['permission'] === 'write') {
+            return 'write';
+        } else {
+            return 'read';
+        }
     }
     
     return false;
@@ -218,29 +248,7 @@ function get_file_category($extension) {
     return 'unknown';
 }
 
-function get_file_icon($file_type, $extension) {
-    switch ($file_type) {
-        case 'image':
-            return '🖼️';
-        case 'pdf':
-            return '📄';
-        case 'document':
-            return '📝';
-        case 'spreadsheet':
-            return '📊';
-        default:
-            return '📎';
-    }
-}
 
-function format_file_size($bytes) {
-    $units = ['B', 'KB', 'MB', 'GB'];
-    $bytes = max($bytes, 0);
-    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-    $pow = min($pow, count($units) - 1);
-    $bytes /= pow(1024, $pow);
-    return round($bytes, 2) . ' ' . $units[$pow];
-}
 
 function get_upload_path() {
     return realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR . 'uploads';

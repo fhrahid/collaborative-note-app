@@ -18,6 +18,8 @@ CREATE TABLE notes (
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT,
+    is_public TINYINT(1) DEFAULT 0,
+    share_token VARCHAR(32) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -39,12 +41,14 @@ CREATE TABLE attachments (
 CREATE TABLE shared_notes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     note_id INT NOT NULL,
-    user_id INT NOT NULL,
+    shared_by_user_id INT NOT NULL,
+    shared_with_user_id INT NOT NULL,
     permission ENUM('read', 'write') DEFAULT 'read',
     shared_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_share (note_id, user_id)
+    FOREIGN KEY (shared_by_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (shared_with_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_share (note_id, shared_with_user_id)
 );
 
 -- Create collaborators table
@@ -64,7 +68,8 @@ CREATE INDEX idx_notes_user_id ON notes(user_id);
 CREATE INDEX idx_notes_created_at ON notes(created_at);
 CREATE INDEX idx_attachments_note_id ON attachments(note_id);
 CREATE INDEX idx_shared_notes_note_id ON shared_notes(note_id);
-CREATE INDEX idx_shared_notes_user_id ON shared_notes(user_id);
+CREATE INDEX idx_shared_notes_shared_by ON shared_notes(shared_by_user_id);
+CREATE INDEX idx_shared_notes_shared_with ON shared_notes(shared_with_user_id);
 CREATE INDEX idx_collaborators_note_id ON collaborators(note_id);
 CREATE INDEX idx_collaborators_user_id ON collaborators(user_id);
 

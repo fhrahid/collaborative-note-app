@@ -1,5 +1,6 @@
 <?php
 require_once 'config/config_local.php';
+require_once 'includes/helpers.php';
 
 // Require login
 require_login();
@@ -18,7 +19,7 @@ $note_id = (int)$_GET['id'];
 // Check if user has edit permission for this note
 $permission = can_user_access_note($note_id, $user_id, $db);
 
-if ($permission !== 'edit' && $permission !== 'owner') {
+if ($permission !== 'write' && $permission !== 'owner') {
     flash_message('You do not have permission to edit this note.', 'error');
     redirect('shared_with_me_local.php');
 }

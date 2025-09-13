@@ -6,14 +6,14 @@ require_login();
 
 $user_id = get_current_user_id();
 
-// Get notes shared with this user
+// Get notes shared with current user
 $stmt = $db->prepare("
-    SELECT n.*, u.username as shared_by_username, sn.permission, sn.created_at as shared_at
+    SELECT n.*, u.username as owner_username, sn.permission, sn.shared_at
     FROM notes n 
     JOIN shared_notes sn ON n.id = sn.note_id 
-    JOIN users u ON sn.shared_by_user_id = u.id 
+    JOIN users u ON n.user_id = u.id 
     WHERE sn.shared_with_user_id = ? 
-    ORDER BY sn.created_at DESC
+    ORDER BY sn.shared_at DESC
 ");
 $stmt->execute([$user_id]);
 $shared_notes = $stmt->fetchAll();
@@ -85,7 +85,7 @@ $flash = get_flash_message();
                     <?php foreach ($shared_notes as $note): ?>
                         <div class="note-card">
                             <div class="shared-indicator">
-                                📤 Shared by <?php echo htmlspecialchars($note['shared_by_username']); ?>
+                                📤 Shared by <?php echo htmlspecialchars($note['owner_username']); ?>
                                 <span class="permission-indicator permission-<?php echo $note['permission']; ?>">
                                     <?php echo ucfirst($note['permission']); ?>
                                 </span>

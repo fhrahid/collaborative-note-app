@@ -1,6 +1,5 @@
 <?php
 require_once 'config/config_local.php';
-require_once 'includes/helpers.php';
 
 // Require login
 require_login();
@@ -111,13 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Get current shares
 $stmt = $db->prepare("
-    SELECT sn.id, sn.permission, u.username, u.email, sn.created_at 
+    SELECT sn.id, sn.permission, u.username, u.email, sn.shared_at 
     FROM shared_notes sn 
     JOIN users u ON sn.shared_with_user_id = u.id 
-    WHERE sn.note_id = ? AND sn.shared_by_user_id = ?
-    ORDER BY sn.created_at DESC
+    WHERE sn.note_id = ? 
+    ORDER BY sn.shared_at DESC
 ");
-$stmt->execute([$note_id, $user_id]);
+$stmt->execute([$note_id]);
 $current_shares = $stmt->fetchAll();
 
 // Handle AJAX user search
@@ -310,7 +309,7 @@ if (isset($_GET['search_users'])) {
                         <div class="shared-user-info">
                             <strong><?php echo htmlspecialchars($share['username']); ?></strong>
                             <small style="color: #666; display: block;"><?php echo htmlspecialchars($share['email']); ?></small>
-                            <small style="color: #999;">Shared on <?php echo date('M j, Y', strtotime($share['created_at'])); ?></small>
+                            <small style="color: #999;">Shared on <?php echo date('M j, Y', strtotime($share['shared_at'])); ?></small>
                         </div>
                         <div>
                             <span class="permission-badge permission-<?php echo $share['permission']; ?>">

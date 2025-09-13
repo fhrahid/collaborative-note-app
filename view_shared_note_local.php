@@ -1,5 +1,6 @@
 <?php
 require_once 'config/config_local.php';
+require_once 'includes/helpers.php';
 
 // Require login
 require_login();
@@ -30,7 +31,7 @@ if ($permission === 'owner') {
     $note = $stmt->fetch();
     $shared_by = null;
 } else {
-    // Note is shared with user
+    // First try to get note from shared_notes
     $stmt = $db->prepare("
         SELECT n.*, u.username as shared_by_username, sn.permission 
         FROM notes n 
@@ -41,6 +42,19 @@ if ($permission === 'owner') {
     $stmt->execute([$note_id, $user_id]);
     $note = $stmt->fetch();
     $shared_by = $note['shared_by_username'] ?? null;
+    
+    // If not found in shared_notes, check collaborators
+    if (!$note) {
+        $stmt = $db->prepare("
+            SELECT n.*, 'Collaborator' as access_type
+            FROM notes n 
+            JOIN collaborators c ON n.id = c.note_id 
+            WHERE n.id = ? AND c.user_id = ?
+        ");
+        $stmt->execute([$note_id, $user_id]);
+        $note = $stmt->fetch();
+        $shared_by = 'Added as collaborator';
+    }
 }
 
 if (!$note) {

@@ -74,7 +74,7 @@ $stmt->execute([$user_id]);
 $stats['total_notes'] = $stmt->fetch()['count'];
 
 // Shared notes (notes shared with user)
-$stmt = $pdo->prepare("SELECT COUNT(*) as count FROM shared_notes WHERE user_id = ?");
+$stmt = $pdo->prepare("SELECT COUNT(*) as count FROM shared_notes WHERE shared_with_user_id = ?");
 $stmt->execute([$user_id]);
 $stats['shared_notes'] = $stmt->fetch()['count'];
 
