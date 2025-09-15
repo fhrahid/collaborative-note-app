@@ -1,0 +1,40 @@
+# Database files (local development)
+data/
+*.db
+*.sqlite
+
+# Upload files (user-generated content)
+uploads/
+
+# PHP temporary/debug files
+test_db.php
+debug_*.php
+cleanup_*.php
+
+# Environment specific files
+.env
+.env.local
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/

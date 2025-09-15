@@ -1,0 +1,43 @@
+# macOS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+error_log
+*.log
+
+# Archive files
+*.zip
+Archive.zip
+V1.zip
+
+# Uploaded files (you may want to keep these depending on your needs)
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.pdf
+uploads/*.doc
+uploads/*.docx
+
+# Config files with sensitive data
+config/config_local.php
+
+# Temporary files
+*_local.php
+temp/
+tmp/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local

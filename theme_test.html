@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme System Test</title>
+    <link rel="stylesheet" href="assets/css/themes.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .gradient-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .gradient-box {
+            height: 100px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .test-form {
+            margin: 20px 0;
+        }
+        
+        .test-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .test-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--theme-transition);
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-card">
+            <h1>Theme System Test</h1>
+            <p>This page tests the dark/light theme system. Click the theme toggle button to switch between themes.</p>
+            
+            <div class="test-form">
+                <input type="text" class="test-input" placeholder="Test input field" value="Sample text">
+                <button class="test-button">Test Button</button>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <h2>Gradient Examples</h2>
+            <div class="gradient-examples">
+                <div class="gradient-box" style="background: var(--gradient-primary);">Primary</div>
+                <div class="gradient-box" style="background: var(--gradient-blue);">Blue</div>
+                <div class="gradient-box" style="background: var(--gradient-green);">Green</div>
+                <div class="gradient-box" style="background: var(--gradient-purple);">Purple</div>
+                <div class="gradient-box" style="background: var(--gradient-pink);">Pink</div>
+                <div class="gradient-box" style="background: var(--gradient-orange);">Orange</div>
+                <div class="gradient-box" style="background: var(--gradient-red);">Red</div>
+                <div class="gradient-box" style="background: var(--gradient-gray);">Gray</div>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <h2>Theme Variables</h2>
+            <ul>
+                <li>Background: <span style="color: var(--text-secondary);">var(--bg-primary)</span></li>
+                <li>Text Primary: <span style="color: var(--text-primary);">var(--text-primary)</span></li>
+                <li>Text Secondary: <span style="color: var(--text-secondary);">var(--text-secondary)</span></li>
+                <li>Card Background: <span style="color: var(--text-secondary);">var(--card-bg)</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Theme System -->
+    <script src="assets/js/theme-manager.js"></script>
+    <script>
+        // Initialize theme manager
+        const themeManager = new ThemeManager();
+        
+        // Add test console logs
+        console.log('Theme system loaded');
+        console.log('Current theme:', document.documentElement.getAttribute('data-theme') || 'light');
+    </script>
+</body>
+</html>

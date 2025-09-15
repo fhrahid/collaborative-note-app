@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom URL Demo - Note App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .demo-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .demo-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .url-example {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .good { border-left-color: #28a745; }
+        .bad { border-left-color: #dc3545; }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .check { color: #28a745; font-weight: bold; }
+        .cross { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🔗 Custom URL Feature Demo</h1>
+            <p>Professional, memorable share links for your notes</p>
+        </div>
+
+        <div class="demo-section">
+            <h3>✨ What's New</h3>
+            <p>Instead of random share links like:</p>
+            <div class="url-example">yourdomain.com/public_note.php?token=Ab3xY9</div>
+            
+            <p>You can now create custom URLs like:</p>
+            <div class="url-example">yourdomain.com/meeting-notes</div>
+            <div class="url-example">yourdomain.com/project-2024</div>
+            <div class="url-example">yourdomain.com/team-guidelines</div>
+        </div>
+
+        <div class="demo-section good">
+            <h3>✅ Valid Custom URLs</h3>
+            <ul class="feature-list">
+                <li><span class="check">✓</span> meeting-notes</li>
+                <li><span class="check">✓</span> project_2024</li>
+                <li><span class="check">✓</span> team-guidelines</li>
+                <li><span class="check">✓</span> MyReport</li>
+                <li><span class="check">✓</span> db_assignment</li>
+                <li><span class="check">✓</span> final-presentation</li>
+            </ul>
+        </div>
+
+        <div class="demo-section bad">
+            <h3>❌ Invalid Custom URLs</h3>
+            <ul class="feature-list">
+                <li><span class="cross">✗</span> my notes (spaces not allowed)</li>
+                <li><span class="cross">✗</span> ab (too short, minimum 3 characters)</li>
+                <li><span class="cross">✗</span> this-is-way-too-long-for-url (too long, maximum 20 characters)</li>
+                <li><span class="cross">✗</span> meeting@notes (special characters not allowed)</li>
+                <li><span class="cross">✗</span> notes/project (slashes not allowed)</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h3>🚀 How to Use</h3>
+            <ol>
+                <li><strong>Create New Public Link:</strong> Enter custom URL when generating public link</li>
+                <li><strong>Update Existing Link:</strong> Use "Customize Your URL" section in share settings</li>
+                <li><strong>Leave Empty:</strong> System generates random token if no custom URL provided</li>
+                <li><strong>Uniqueness:</strong> Each custom URL must be unique across all notes</li>
+            </ol>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Benefits</h3>
+            <ul class="feature-list">
+                <li><span class="check">✓</span> Professional appearance for business presentations</li>
+                <li><span class="check">✓</span> Easy to remember and share verbally</li>
+                <li><span class="check">✓</span> Better for marketing and educational materials</li>
+                <li><span class="check">✓</span> SEO-friendly URLs for public content</li>
+                <li><span class="check">✓</span> Maintains security with validation</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h3>⚙️ Technical Details</h3>
+            <ul class="feature-list">
+                <li><strong>URL Handler:</strong> s.php processes custom URLs</li>
+                <li><strong>Database:</strong> Unique constraints prevent duplicates</li>
+                <li><strong>Validation:</strong> Real-time checking in the interface</li>
+                <li><strong>Fallback:</strong> Works with existing random tokens</li>
+                <li><strong>Security:</strong> Same access controls as standard public links</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p>Ready for your database course demonstration! 🎓</p>
+            <small>Custom URLs make your note app look professional and production-ready.</small>
+        </div>
+    </div>
+</body>
+</html>

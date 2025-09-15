@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme System Test</title>
+    <link rel="stylesheet" href="assets/css/themes.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        
+        .test-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-backdrop);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--card-border);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--theme-transition);
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-blue);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--gradient-gray);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-card">
+            <h1 style="color: var(--text-primary); margin-bottom: 1rem;">🎨 Theme System Test</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                Test the dark/light mode theme system. Click the toggle button to switch themes.
+            </p>
+            
+            <button id="themeToggle" class="btn btn-primary">🌙 Switch to Dark Mode</button>
+            <button class="btn btn-secondary">Test Button</button>
+            
+            <div style="margin-top: 2rem; padding: 1rem; background: var(--attachment-bg); border-radius: 8px; border: 2px solid var(--attachment-border);">
+                <strong style="color: var(--text-primary);">Test Area:</strong>
+                <p style="color: var(--text-primary); margin-top: 0.5rem;">
+                    This area should change colors when you switch themes.
+                </p>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <h2 style="color: var(--text-primary); margin-bottom: 1rem;">📋 File Migration Status</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ dashboard.php</strong><br>
+                    <small>Migrated & Modern</small>
+                </div>
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ view_note.php</strong><br>
+                    <small>Created & Modern</small>
+                </div>
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ shared_with_me.php</strong><br>
+                    <small>Created & Modern</small>
+                </div>
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ share.php</strong><br>
+                    <small>Created & Modern</small>
+                </div>
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ view_shared_note.php</strong><br>
+                    <small>Created & Modern</small>
+                </div>
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ edit_shared_note.php</strong><br>
+                    <small>Created & Modern</small>
+                </div>
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ download.php</strong><br>
+                    <small>Created & Functional</small>
+                </div>
+                <div style="background: var(--gradient-green); color: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                    <strong>✅ delete_attachment.php</strong><br>
+                    <small>Created & Functional</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Theme System -->
+    <script src="assets/js/theme-manager.js"></script>
+    <script>
+        // Initialize theme manager
+        const themeManager = new ThemeManager();
+        
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        
+        function updateToggleText() {
+            const currentTheme = themeManager.getCurrentTheme();
+            themeToggle.textContent = currentTheme === 'dark' ? '☀️ Switch to Light Mode' : '🌙 Switch to Dark Mode';
+        }
+        
+        // Set initial text
+        updateToggleText();
+        
+        themeToggle.addEventListener('click', () => {
+            themeManager.toggleTheme();
+            updateToggleText();
+        });
+    </script>
+</body>
+</html>

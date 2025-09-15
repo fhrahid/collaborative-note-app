@@ -1,0 +1,353 @@
+/* Theme System for Note App */
+/* CSS Variables for Light and Dark Themes */
+
+:root {
+  /* Light Theme Variables (Default) */
+  --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-secondary: rgba(255, 255, 255, 0.95);
+  --bg-tertiary: #f8f9fa;
+  --bg-quaternary: rgba(255, 255, 255, 0.1);
+  
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-tertiary: #95a5a6;
+  --text-inverse: #ffffff;
+  
+  --border-primary: #e0e6ed;
+  --border-secondary: #f1f3f4;
+  --border-hover: #bdc3c7;
+  --border-focus: #667eea;
+  
+  --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 16px 48px rgba(0, 0, 0, 0.15);
+  --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.15);
+  
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-blue: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  --gradient-gray: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  --gradient-red: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  --gradient-green: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  --gradient-orange: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  --gradient-purple: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+  --gradient-pink: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+  
+  --blur-backdrop: blur(10px);
+  --blur-heavy: blur(20px);
+  
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(255, 255, 255, 0.2);
+  --input-bg: #ffffff;
+  --attachment-bg: #f8f9fa;
+  --attachment-border: #e9ecef;
+  
+  --theme-transition: all 0.3s ease;
+}
+
+/* Dark Theme Variables */
+[data-theme="dark"] {
+  --bg-primary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  --bg-secondary: rgba(30, 30, 30, 0.95);
+  --bg-tertiary: #2d2d2d;
+  --bg-quaternary: rgba(0, 0, 0, 0.2);
+  
+  --text-primary: #e8e8e8;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #888888;
+  --text-inverse: #ffffff;
+  
+  --border-primary: #404040;
+  --border-secondary: #333333;
+  --border-hover: #555555;
+  --border-focus: #667eea;
+  
+  --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-medium: 0 16px 48px rgba(0, 0, 0, 0.4);
+  --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.5);
+  
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-blue: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  --gradient-gray: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  --gradient-red: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  --gradient-green: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  --gradient-orange: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  --gradient-purple: linear-gradient(135deg, #8e44ad 0%, #732d91 100%);
+  --gradient-pink: linear-gradient(135deg, #c2185b 0%, #ad1457 100%);
+  
+  --card-bg: rgba(45, 45, 45, 0.95);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --input-bg: #3a3a3a;
+  --attachment-bg: #363636;
+  --attachment-border: #4a4a4a;
+}
+
+/* Base Styling with Theme Variables - Higher Specificity */
+* {
+  transition: var(--theme-transition) !important;
+}
+
+body {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  transition: var(--theme-transition) !important;
+}
+
+/* Card Components - Force Override */
+.card, .header, .note-form, .auth-form, .note-view-container, 
+.note-meta-info, .stat-card, .note-card, .empty-state,
+.developer-card, .hero-section, .developers-container .developer-card {
+  background: var(--card-bg) !important;
+  backdrop-filter: var(--blur-backdrop) !important;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: var(--shadow-light) !important;
+  transition: var(--theme-transition) !important;
+}
+
+/* Text Elements - Force Override */
+.header h1, .auth-form h2, .note-title a, .stat-number,
+.hero-section h1, .developer-card h3 {
+  background: var(--gradient-primary) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.user-welcome, .auth-subtitle, .note-date, .meta-value, 
+.attachment-meta, .form-help, .hero-section p,
+.developer-card p, .stat-label, .note-content {
+  color: var(--text-secondary) !important;
+}
+
+/* Form Elements - Force Override */
+.form-group input, .form-group textarea {
+  background: var(--input-bg) !important;
+  border: 2px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  transition: var(--theme-transition) !important;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+.form-group input:hover, .form-group textarea:hover {
+  border-color: var(--border-hover) !important;
+}
+
+.form-group label {
+  color: var(--text-primary) !important;
+}
+
+/* Attachment Elements */
+.attachment-item, .attachment-card {
+  background: var(--attachment-bg) !important;
+  border: 2px solid var(--attachment-border) !important;
+  transition: var(--theme-transition) !important;
+}
+
+.attachment-item:hover, .attachment-card:hover {
+  border-color: var(--border-focus) !important;
+}
+
+.attachment-name, .attachment-filename {
+  color: var(--text-primary) !important;
+}
+
+/* Alert Elements */
+.alert-success {
+  background: var(--gradient-green) !important;
+}
+
+.alert-error {
+  background: linear-gradient(135deg, #ff7675 0%, #e17055 100%) !important;
+}
+
+/* File Upload Area */
+.file-upload-area {
+  background: var(--attachment-bg) !important;
+  border: 2px dashed var(--border-hover) !important;
+  transition: var(--theme-transition) !important;
+}
+
+.file-upload-area:hover, .file-upload-area.dragover {
+  border-color: var(--border-focus) !important;
+  background: rgba(102, 126, 234, 0.1) !important;
+}
+
+.file-upload-text {
+  color: var(--text-secondary) !important;
+}
+
+.file-upload-icon {
+  color: var(--border-hover) !important;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gradient-primary) !important;
+  color: var(--text-inverse) !important;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-light) !important;
+  transition: var(--theme-transition) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-3px) rotate(180deg) !important;
+  box-shadow: var(--shadow-medium) !important;
+}
+
+.theme-toggle:active {
+  transform: translateY(-1px) rotate(180deg) !important;
+}
+
+/* Dark Mode Specific Adjustments */
+[data-theme="dark"] .note-content-display,
+[data-theme="dark"] .empty-state h3,
+[data-theme="dark"] .note-title,
+[data-theme="dark"] .meta-item,
+[data-theme="dark"] .note-attachments h4,
+[data-theme="dark"] .developer-card h3,
+[data-theme="dark"] .hero-section h1 {
+  color: var(--text-primary) !important;
+}
+
+/* Shared Notes Specific Styling */
+.shared-indicator {
+  background: rgba(102, 126, 234, 0.2) !important;
+  color: var(--border-focus) !important;
+  border: 1px solid var(--border-focus) !important;
+}
+
+.permission-indicator {
+  background: var(--attachment-bg) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--attachment-border) !important;
+}
+
+.permission-read {
+  background: rgba(255, 193, 7, 0.2) !important;
+  color: #856404 !important;
+}
+
+.permission-edit,
+.permission-write {
+  background: rgba(40, 167, 69, 0.2) !important;
+  color: #155724 !important;
+}
+
+[data-theme="dark"] .permission-read {
+  background: rgba(255, 193, 7, 0.3) !important;
+  color: #ffc107 !important;
+}
+
+[data-theme="dark"] .permission-edit,
+[data-theme="dark"] .permission-write {
+  background: rgba(40, 167, 69, 0.3) !important;
+  color: #28a745 !important;
+}
+
+/* Reading Time Badge */
+.reading-time {
+  background: rgba(102, 126, 234, 0.2) !important;
+  color: var(--border-focus) !important;
+}
+
+[data-theme="dark"] .reading-time {
+  background: rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Theme Toggle Animation */
+@keyframes themeSwitch {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.theme-toggle.switching {
+  animation: themeSwitch 0.6s ease-in-out !important;
+}
+
+/* Mobile Responsiveness for Theme Toggle */
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 10px !important;
+    right: 10px !important;
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 1.2rem !important;
+  }
+}
+
+/* Developer Page Specific Styling */
+.team-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 30px !important;
+}
+
+.developer-card {
+  padding: 30px !important;
+  border-radius: 15px !important;
+  text-align: center !important;
+}
+
+.developer-photo {
+  border: 4px solid var(--border-focus) !important;
+  border-radius: 50% !important;
+}
+
+.skill-tag {
+  background: var(--attachment-bg) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--attachment-border) !important;
+}
+
+/* Force override for inline styles */
+[data-theme="dark"] * {
+  color: var(--text-primary);
+}
+
+/* Custom scrollbar for dark mode */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary) !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--border-hover) !important;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary) !important;
+}
+
+/* Print styles - always use light theme */
+@media print {
+  :root {
+    --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --bg-secondary: rgba(255, 255, 255, 0.95);
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --card-bg: rgba(255, 255, 255, 0.95);
+  }
+  
+  .theme-toggle {
+    display: none !important;
+  }
+}
